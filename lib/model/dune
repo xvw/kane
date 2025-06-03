@@ -1,0 +1,6 @@
+(library
+ (name kane_model)
+ (public_name kane.model)
+ (synopsis "Describes the Kane data model")
+ (libraries yocaml kane.util)
+ (modules_without_implementation intf))

@@ -1,0 +1,5 @@
+(library
+ (name Kane_util)
+ (public_name kane.util)
+ (inline_tests)
+ (preprocess (pps ppx_expect)))
