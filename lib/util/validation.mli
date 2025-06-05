@@ -1,7 +1,7 @@
 (** Tools for composing validations more easily. *)
 
-(** A validator to ['a] values. *)
-type 'a v = Yocaml.Data.t -> 'a Yocaml.Data.Validation.validated_value
+type ('a, 'b) t = 'a -> 'b Yocaml.Data.Validation.validated_value
+type 'a v = (Yocaml.Data.t, 'a) t
 
 (** An alternative required validator that can deal with multiple fields. *)
 val required

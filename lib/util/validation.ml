@@ -1,4 +1,5 @@
-type 'a v = Yocaml.Data.t -> 'a Yocaml.Data.Validation.validated_value
+type ('a, 'b) t = 'a -> 'b Yocaml.Data.Validation.validated_value
+type 'a v = (Yocaml.Data.t, 'a) t
 
 let required fields alt validator =
   let open Yocaml.Data.Validation in
