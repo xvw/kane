@@ -3,6 +3,9 @@
 module String = String
 module Validation = Validation
 
+(** [has_field is_empty field opt] compute the [has_field] using [is_empty]. *)
+val has_field : ('a -> bool) -> string -> 'a -> string * Yocaml.Data.t
+
 (** [as_opt_bool field opt] compute the [has_field] from an option. *)
 val as_opt_bool : string -> 'a option -> string * Yocaml.Data.t
 

@@ -15,6 +15,7 @@
  (description "A set of pre-coded features for YOCaml to make bootstrapping a static site easier")
  (depends
   (ocaml (>= 5.2.0))
+  uri
   yocaml
   yocaml_cmarkit
   yocaml_yaml
