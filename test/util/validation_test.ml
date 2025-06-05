@@ -1,26 +1,5 @@
 open Kane_util
 
-let pp spp ppf = function
-  | Ok x -> Format.fprintf ppf "Ok: %a" spp x
-  | Error error ->
-    let e =
-      Yocaml.(
-        Eff.Provider_error
-          (Required.Validation_error { entity = "test"; error }))
-    in
-    Format.fprintf
-      ppf
-      "Error: %a"
-      (fun ppf x ->
-         Yocaml.Diagnostic.exception_to_diagnostic
-           ~in_exception_handler:false
-           ppf
-           x)
-      e
-;;
-
-let dump spp x = x |> Format.asprintf "%a" (pp spp) |> print_endline
-
 let%expect_test
     "required 1 - with an empty set, it should lead to an unknown field"
   =
@@ -29,7 +8,7 @@ let%expect_test
   let result =
     record (fun fields -> Validation.required fields [] string) input
   in
-  dump Format.pp_print_string result;
+  Dump.validation Format.pp_print_string result;
   [%expect
     {|
     Error: --- Oh dear, an error has occurred ---
@@ -53,7 +32,7 @@ let%expect_test "required 2 - using the main field name" =
          Validation.required fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.pp_print_string result;
+  Dump.validation Format.pp_print_string result;
   [%expect {| Ok: hello |}]
 ;;
 
@@ -68,7 +47,7 @@ let%expect_test "required 2 - using the secondary field name" =
          Validation.required fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.pp_print_string result;
+  Dump.validation Format.pp_print_string result;
   [%expect {| Ok: hello |}]
 ;;
 
@@ -81,7 +60,7 @@ let%expect_test "required 3 - without field" =
          Validation.required fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.pp_print_string result;
+  Dump.validation Format.pp_print_string result;
   [%expect
     {|
     Error: --- Oh dear, an error has occurred ---
@@ -103,7 +82,7 @@ let%expect_test "optional 1 - without fields" =
          Validation.optional fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.(pp_print_option pp_print_string) result;
+  Dump.validation Format.(pp_print_option pp_print_string) result;
   [%expect {| Ok: |}]
 ;;
 
@@ -118,7 +97,7 @@ let%expect_test "optional 2 - with main field" =
          Validation.optional fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.(pp_print_option pp_print_string) result;
+  Dump.validation Format.(pp_print_option pp_print_string) result;
   [%expect {| Ok: foo |}]
 ;;
 
@@ -133,7 +112,7 @@ let%expect_test "optional 3 - with secondary field" =
          Validation.optional fields [ "main_title"; "title" ] string)
       input
   in
-  dump Format.(pp_print_option pp_print_string) result;
+  Dump.validation Format.(pp_print_option pp_print_string) result;
   [%expect {| Ok: foo |}]
 ;;
 
@@ -145,6 +124,6 @@ let%expect_test "optional 3 - with empty fieldset" =
   let result =
     record (fun fields -> Validation.optional fields [] string) input
   in
-  dump Format.(pp_print_option pp_print_string) result;
+  Dump.validation Format.(pp_print_option pp_print_string) result;
   [%expect {| Ok: |}]
 ;;

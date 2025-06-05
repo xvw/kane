@@ -1,0 +1,7 @@
+(library
+ (name model_test)
+ (package kane)
+ (inline_tests)
+ (libraries util_test yocaml kane.util kane.model)
+ (preprocess
+  (pps ppx_expect)))
