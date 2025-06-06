@@ -126,7 +126,15 @@ let compact_target f = function
 ;;
 
 let repr_domain _ host _ _ _ = host
-let repr_domain_with_path _ host _ _ path = host ^ Yocaml.Path.to_string path
+
+let repr_domain_with_path _ host _ _ path =
+  let s =
+    match Yocaml.Path.to_list path with
+    | [ "/" ] | [ "."; "/" ] -> ""
+    | _ -> Yocaml.Path.to_string path
+  in
+  host ^ s
+;;
 
 let repr url =
   let open Yocaml.Data in
@@ -136,6 +144,8 @@ let repr url =
     ; "domain_with_path", string (compact_target repr_domain_with_path url)
     ]
 ;;
+
+let compact_name url = compact_target repr_domain_with_path url
 
 let normalize url =
   let is_internal = is_internal url in
