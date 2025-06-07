@@ -38,7 +38,7 @@ end
 
 let concat_with f sep list =
   let res, _ =
-    List.fold_left
+    Stdlib.List.fold_left
       (fun (acc, i) x ->
          let sep = if Int.equal i 0 then "" else sep in
          acc ^ sep ^ f x, succ i)

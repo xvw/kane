@@ -2,5 +2,5 @@
  (name kane_model)
  (public_name kane.model)
  (synopsis "Describes the Kane data model")
- (libraries uri yocaml kane.util)
+ (libraries uri emile yocaml kane.util)
  (modules_without_implementation intf))

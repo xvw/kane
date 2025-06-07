@@ -16,6 +16,7 @@
  (depends
   (ocaml (>= 5.2.0))
   uri
+  emile 
   yocaml
   yocaml_cmarkit
   yocaml_yaml
