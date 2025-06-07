@@ -37,13 +37,10 @@ module Map = struct
 end
 
 let concat_with f sep list =
-  let res, _ =
-    Stdlib.List.fold_left
-      (fun (acc, i) x ->
-         let sep = if Int.equal i 0 then "" else sep in
-         acc ^ sep ^ f x, succ i)
-      ("", 0)
-      list
-  in
-  res
+  List.fold_lefti
+    (fun i acc x ->
+       let sep = if Int.equal i 0 then "" else sep in
+       acc ^ sep ^ f x)
+    ""
+    list
 ;;

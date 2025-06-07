@@ -1,6 +1,7 @@
 (** Set of utilities to make it easier to build the generator. *)
 
 module String = String
+module List = List
 module Validation = Validation
 
 (** [has_field is_empty field opt] compute the [has_field] using [is_empty]. *)

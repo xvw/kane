@@ -1,4 +1,5 @@
 module String = String
+module List = List
 module Validation = Validation
 
 let mk_has_field field = "has_" ^ field
