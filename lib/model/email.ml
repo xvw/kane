@@ -43,10 +43,15 @@ let validate =
 let normalize { local; domain } =
   let open Yocaml.Data in
   let cdomain = concat_domain domain in
+  let address = local ^ "@" ^ cdomain in
   record
-    [ "address", string (local ^ "@" ^ cdomain)
+    [ "address", string address
     ; "local", string local
     ; "domain", string cdomain
     ; "domain_fragments", list_of string domain
+    ; ( "address_md5"
+      , string
+          (Digest.to_hex
+           @@ Digest.string Stdlib.String.(lowercase_ascii @@ trim address)) )
     ]
 ;;

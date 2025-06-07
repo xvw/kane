@@ -11,6 +11,7 @@ type t =
   ; bluesky_account : string option
   ; more_accounts : Link.t list
   ; more_links : Link.t list
+  ; more_emails : Email.t Kane_util.String.Map.t
   ; custom_attributes : string Kane_util.String.Map.t
   }
 
@@ -27,6 +28,7 @@ let make
       ?bluesky_account
       ?(more_accounts = [])
       ?(more_links = [])
+      ?(more_emails = Kane_util.String.Map.empty)
       ?(custom_attributes = Kane_util.String.Map.empty)
       ()
   =
@@ -42,6 +44,7 @@ let make
   ; bluesky_account
   ; more_accounts
   ; more_links
+  ; more_emails
   ; custom_attributes
   }
 ;;
@@ -68,4 +71,118 @@ let from_mailbox given =
       (Email.from_address (local, domain))
   | Ok _ -> Yocaml.Data.Validation.fail_with ~given "Missing identity"
   | Error _ -> Yocaml.Data.Validation.fail_with ~given "Invalid mailbox"
+;;
+
+let mastodon =
+  let open Yocaml.Data.Validation in
+  record (fun obj ->
+    let+ instance = required obj "instance" Url.validate
+    and+ username =
+      Kane_util.Validation.required
+        obj
+        []
+        (string & Kane_util.String.ensure_not_blank)
+    in
+    instance, username)
+;;
+
+let validate =
+  let open Yocaml.Data.Validation in
+  (string & from_mailbox)
+  / record (fun obj ->
+    let open Kane_util.Validation in
+    let+ display_name =
+      required
+        obj
+        [ "display_name"; "username"; "name"; "id"; "user_name" ]
+        (string & Kane_util.String.ensure_not_blank)
+    and+ first_name =
+      optional
+        obj
+        [ "first_name"; "firstname" ]
+        (string & Kane_util.String.ensure_not_blank)
+    and+ last_name =
+      optional
+        obj
+        [ "last_name"; "lastname" ]
+        (string & Kane_util.String.ensure_not_blank)
+    and+ avatar = optional obj [ "avatar" ] Url.validate
+    and+ website = optional obj [ "site"; "website"; "url" ] Link.validate
+    and+ email = optional obj [ "email"; "mail" ] Email.validate
+    and+ x_account =
+      optional obj [ "x"; "twitter"; "x_account"; "twitter_account" ] string
+    and+ bluesky_account =
+      optional
+        obj
+        [ "bluesky"; "bsky"; "bluesky_account"; "bsky_account" ]
+        string
+    and+ mastodon_account =
+      optional obj [ "mastodon"; "mastodon_account" ] mastodon
+    and+ more_accounts =
+      optional_or
+        ~default:[]
+        obj
+        [ "more_accounts"; "accounts" ]
+        (list_of Link.validate)
+    and+ more_links =
+      optional_or
+        ~default:[]
+        obj
+        [ "more_links"; "links" ]
+        (list_of Link.validate)
+    and+ more_emails =
+      optional_or
+        ~default:Kane_util.String.Map.empty
+        obj
+        [ "more_emails"; "emails" ]
+        (Kane_util.String.Map.validate Email.validate)
+    and+ custom_attributes =
+      optional_or
+        ~default:Kane_util.String.Map.empty
+        obj
+        [ "attributes"; "kv"; "data"; "custom"; "custom_attributes" ]
+        (Kane_util.String.Map.validate string)
+    in
+    make
+      ~display_name
+      ?first_name
+      ?last_name
+      ?avatar
+      ?website
+      ?email
+      ?x_account
+      ?bluesky_account
+      ?mastodon_account
+      ~more_accounts
+      ~more_links
+      ~more_emails
+      ~custom_attributes
+      ())
+;;
+
+let normalize
+      { display_name
+      ; first_name
+      ; last_name
+      ; avatar
+      ; website
+      ; email
+      ; x_account
+      ; mastodon_account
+      ; github_account
+      ; bluesky_account
+      ; more_accounts
+      ; more_links
+      ; more_emails
+      ; custom_attributes
+      }
+  =
+  let open Yocaml.Data in
+  record
+    [ "display_name", string display_name
+    ; "first_name", option string first_name
+    ; "last_name", option string last_name
+    ; Kane_util.as_opt_bool "first_name" first_name
+    ; Kane_util.as_opt_bool "last_name" last_name
+    ]
 ;;

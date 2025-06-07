@@ -12,7 +12,8 @@ let%expect_test "email - 1" =
   [%expect
     {|
     Ok: {"address": "xavier@muhokama.fun", "local": "xavier", "domain":
-         "muhokama.fun", "domain_fragments": ["muhokama", "fun"]}
+         "muhokama.fun", "domain_fragments": ["muhokama", "fun"], "address_md5":
+         "d0b36bea051fdc36feffb64c38e89942"}
     |}]
 ;;
 
@@ -21,7 +22,8 @@ let%expect_test "email - 2" =
   [%expect
     {|
     Ok: {"address": "xavier+nospam@xvw.lol", "local": "xavier+nospam", "domain":
-         "xvw.lol", "domain_fragments": ["xvw", "lol"]}
+         "xvw.lol", "domain_fragments": ["xvw", "lol"], "address_md5":
+         "77adb5153886e89f8cb1936cae6be207"}
     |}]
 ;;
 
