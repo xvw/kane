@@ -5,7 +5,7 @@ let required fields alt validator =
   let open Yocaml.Data.Validation in
   let rec loop ?field = function
     | [] ->
-      let field = Option.value ~default:"unknown_field" field in
+      let field = Stdlib.Option.value ~default:"unknown_field" field in
       Error (Yocaml.Nel.singleton @@ Missing_field { field })
     | field :: xs ->
       (match required fields field validator with

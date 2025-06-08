@@ -2,6 +2,7 @@
 
 module String = String
 module List = List
+module Option = Option
 module Validation = Validation
 
 (** [has_field is_empty field opt] compute the [has_field] using [is_empty]. *)
