@@ -13,9 +13,62 @@ type extern =
   ; query : string list Kane_util.String.Map.t
   }
 
+let scheme_to_string = function
+  | Http -> "http"
+  | Https -> "https"
+  | Ftp -> "ftp"
+  | Gemini -> "gemini"
+  | Other x -> x
+;;
+
+let query_to_string query =
+  if Kane_util.String.Map.is_empty query
+  then ""
+  else
+    Kane_util.String.Map.fold
+      (fun k v (i, acc) ->
+         let s = if Int.equal i 0 then "" else "&" in
+         succ i, acc ^ Format.asprintf "%s%s=%s" s k (String.concat "," v))
+      query
+      (0, "?")
+    |> snd
+;;
+
+let extern_to_string { scheme; host; path; port; query } =
+  let port = Option.fold ~none:"" ~some:(fun x -> ":" ^ string_of_int x) port in
+  Format.asprintf
+    "%s://%s%s%s%s"
+    (scheme_to_string scheme)
+    host
+    port
+    (Yocaml.Path.to_string path)
+    (query_to_string query)
+;;
+
 type t =
   | Internal of Yocaml.Path.t * Uri.t
   | External of extern * Uri.t
+
+let https s =
+  let uri = Uri.of_string s in
+  let scheme = Https in
+  let host = Uri.host_with_default ~default:"localhost" uri in
+  let path = Yocaml.Path.from_string (Uri.path uri) in
+  let port = Uri.port uri in
+  let query = uri |> Uri.query |> Kane_util.String.Map.of_list in
+  External ({ scheme; host; path; port; query }, uri)
+;;
+
+let recompute_uri = function
+  | Internal (p, _) ->
+    let s = Yocaml.Path.to_string p in
+    let uri = Uri.of_string s in
+    Internal (p, uri)
+  | External (e, _) ->
+    let s = extern_to_string e in
+    let uri = Uri.of_string s in
+    External (e, uri)
+;;
 
 let normalize_repr
       ?scheme
@@ -65,7 +118,11 @@ let validate_external uri =
     (fun o ->
        let+ host = required o "host" (string & Kane_util.String.ensure_not_blank)
        and+ port = optional o "port" (int & positive)
-       and+ path = required o "path" (string $ Yocaml.Path.from_string)
+       and+ path =
+         required
+           o
+           "path"
+           (string $ Yocaml.Path.from_string $ Yocaml.Path.(relocate ~into:root))
        and+ query =
          optional_or
            ~default:Kane_util.String.Map.empty
@@ -95,14 +152,6 @@ let validate =
 
 let uri = function
   | External (_, uri) | Internal (_, uri) -> uri
-;;
-
-let scheme_to_string = function
-  | Http -> "http"
-  | Https -> "https"
-  | Ftp -> "ftp"
-  | Gemini -> "gemini"
-  | Other x -> x
 ;;
 
 let target_of url = url |> uri |> Uri.to_string
@@ -159,4 +208,19 @@ let normalize url =
     ; "uri", url |> uri |> uri_to_data
     ; "scheme", option (fun x -> x |> scheme_to_string |> string) (scheme url)
     ]
+;;
+
+let resolve url path =
+  let r =
+    match url with
+    | Internal (p, uri) -> Internal (Yocaml.Path.relocate ~into:p path, uri)
+    | External (extern, uri) ->
+      let path =
+        match Yocaml.Path.to_pair path with
+        | `Root, _ -> path
+        | `Rel, _ -> Yocaml.Path.relocate ~into:extern.path path
+      in
+      External ({ extern with path }, uri)
+  in
+  recompute_uri r
 ;;
