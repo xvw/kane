@@ -50,7 +50,7 @@ type t =
   | External of extern * Uri.t
 
 let https s =
-  let uri = Uri.of_string s in
+  let uri = Uri.of_string ("https://" ^ s) in
   let scheme = Https in
   let host = Uri.host_with_default ~default:"localhost" uri in
   let path = Yocaml.Path.from_string (Uri.path uri) in
@@ -224,3 +224,15 @@ let resolve url path =
   in
   recompute_uri r
 ;;
+
+let on_path f url =
+  let r =
+    match url with
+    | Internal (p, uri) -> Internal (f p, uri)
+    | External (extern, uri) ->
+      External ({ extern with path = f extern.path }, uri)
+  in
+  recompute_uri r
+;;
+
+let to_string x = x |> uri |> Uri.to_string

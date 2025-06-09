@@ -10,3 +10,5 @@ val validate : t Kane_util.Validation.v
 val normalize : t -> Yocaml.Data.t
 val compact_name : t -> string
 val resolve : t -> Yocaml.Path.t -> t
+val on_path : (Yocaml.Path.t -> Yocaml.Path.t) -> t -> t
+val to_string : t -> string

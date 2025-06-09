@@ -5,6 +5,29 @@ let ensure_not_blank =
     (fun s -> not (Stdlib.String.equal "" s))
 ;;
 
+(* TODO: maybe to be improved. *)
+let to_list x = x |> Stdlib.String.to_seq |> Stdlib.List.of_seq
+
+let from_list =
+  Stdlib.List.fold_left (fun buf x -> buf ^ Stdlib.String.make 1 x) ""
+;;
+
+let char_at str i =
+  try Some (Stdlib.String.get str i) with
+  | Invalid_argument _ -> None
+;;
+
+let remove_first_char_when pred string =
+  match char_at string 0 with
+  | Some c ->
+    if pred c
+    then (
+      let len = Stdlib.String.length string in
+      Stdlib.String.sub string 1 (len - 1))
+    else string
+  | None -> string
+;;
+
 module Map = struct
   include Stdlib.Map.Make (Stdlib.String)
 
