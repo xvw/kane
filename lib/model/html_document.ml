@@ -1,11 +1,14 @@
-class t ?title ?description () =
+class t ?title ?description ?configuration () =
   object (self : #Intf.html_document)
     val title_value = title
     val description_value = description
+    val configuration_value = configuration
     method title = title_value
     method description = description_value
+    method configuration = configuration_value
     method set_title new_title = {<title_value = new_title>}
     method set_description new_desc = {<description_value = new_desc>}
+    method set_configuration new_conf = {<configuration_value = new_conf>}
 
     method meta_tags =
       Html_meta.

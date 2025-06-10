@@ -233,3 +233,20 @@ let normalize
         custom_attributes
     ]
 ;;
+
+let normalize_name { display_name; first_name; last_name; _ } =
+  let d = String.trim display_name in
+  match first_name, last_name with
+  | Some f, Some l ->
+    Format.asprintf "%s, %s, %s" (String.trim f) d (String.trim l)
+  | _ -> d
+;;
+
+let meta_tags ({ display_name; first_name; last_name; _ } as identity) =
+  [ Html_meta.make_opt ~name:"author" ~content:(normalize_name identity)
+  ; Html_meta.make_opt ~name:"og:profile:username" ~content:display_name
+  ; Html_meta.from_option Fun.id ~name:"og:profile:first_name" first_name
+  ; Html_meta.from_option Fun.id ~name:"og:profile:last_name" last_name
+  ]
+  |> List.filter_map Fun.id
+;;

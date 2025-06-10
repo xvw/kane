@@ -17,9 +17,15 @@ class type html_document = object ('self)
   (** Return the list of [<meta>]. *)
   method meta_tags : Html_meta.t list
 
+  (** Return the current configuration. *)
+  method configuration : Configuration.t option
+
   (** Return the object with a new title. *)
   method set_title : string option -> 'self
 
   (** Return the object with a new description. *)
   method set_description : string option -> 'self
+
+  (** Return the object with a new configuration. *)
+  method set_configuration : Configuration.t option -> 'self
 end
