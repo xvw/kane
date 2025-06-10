@@ -12,3 +12,6 @@ val compact_name : t -> string
 val resolve : t -> Yocaml.Path.t -> t
 val on_path : (Yocaml.Path.t -> Yocaml.Path.t) -> t -> t
 val to_string : t -> string
+val host : t -> string
+val path : t -> Yocaml.Path.t
+val without_scheme : t -> string

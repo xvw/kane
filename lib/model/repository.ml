@@ -33,11 +33,16 @@ let home = function
     Url.resolve gitlab_uri (Yocaml.Path.abs [ name; project; repository ])
 ;;
 
-let bug_tracker = function
-  | (Tangled _ | Github _) as repo ->
-    Url.resolve (home repo) Yocaml.Path.(rel [ "issues" ])
+let resolve path = function
+  | (Tangled _ | Github _) as repo -> Url.resolve (home repo) path
   | Gitlab _ as repo ->
-    Url.resolve (home repo) Yocaml.Path.(rel [ "-"; "issues" ])
+    Url.resolve (home repo) Yocaml.Path.(relocate ~into:(rel [ "-" ]) path)
+;;
+
+let bug_tracker = resolve Yocaml.Path.(rel [ "issues" ])
+
+let blob ?(branch = "main") path =
+  resolve Yocaml.Path.(relocate ~into:(rel [ "blob"; branch ]) path)
 ;;
 
 let repo_from_uri path =
@@ -147,7 +152,18 @@ let clone_http repo =
     |> Url.to_string
 ;;
 
-let clone_ssh _ = "<to-be-done>"
+let suffix = function
+  | Github { user; repository }
+  | Tangled { user; repository }
+  | Gitlab (User { user; repository }) -> [ user; repository ]
+  | Gitlab (Org { name; project; repository }) -> [ name; project; repository ]
+;;
+
+let clone_ssh repo =
+  let domain = Url.host (home repo) in
+  let suffix = repo |> suffix |> String.concat "/" in
+  "git@" ^ domain ^ ":" ^ suffix ^ ".git"
+;;
 
 let normalize repo =
   let open Yocaml.Data in

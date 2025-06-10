@@ -7,6 +7,14 @@ let dump subject =
   |> Util_test.Dump.normalization Repository.normalize
 ;;
 
+let dump_blob ?branch path subject =
+  subject
+  |> Yocaml.Data.string
+  |> Repository.validate
+  |> Result.map (Repository.blob ?branch path)
+  |> Util_test.Dump.normalization Url.normalize
+;;
+
 let%expect_test "repo - 1" =
   "" |> dump;
   [%expect
@@ -46,7 +54,8 @@ let%expect_test "repo - 2" =
            true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
-         {"https": "https://github.com/xvw/kane.git", "ssh": "<to-be-done>"}}
+         {"https": "https://github.com/xvw/kane.git", "ssh":
+          "git@github.com:xvw/kane.git"}}
     |}]
 ;;
 
@@ -76,7 +85,8 @@ let%expect_test "repo - 3" =
            true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
-         {"https": "https://github.com/xvw/kane.git", "ssh": "<to-be-done>"}}
+         {"https": "https://github.com/xvw/kane.git", "ssh":
+          "git@github.com:xvw/kane.git"}}
     |}]
 ;;
 
@@ -106,7 +116,8 @@ let%expect_test "repo - 4" =
            true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
-         {"https": "https://tangled.sh/@xvw.lol/kane", "ssh": "<to-be-done>"}}
+         {"https": "https://tangled.sh/@xvw.lol/kane", "ssh":
+          "git@tangled.sh:xvw.lol/kane.git"}}
     |}]
 ;;
 
@@ -138,6 +149,22 @@ let%expect_test "repo - 5" =
          "scheme": "https"},
         "clone":
          {"https": "https://gitlab.com/funkywork/yocaml.git", "ssh":
-          "<to-be-done>"}}
+          "git@gitlab.com:funkywork/yocaml.git"}}
+    |}]
+;;
+
+let%expect_test "repository resolver - 1" =
+  "github/xvw/kane" |> dump_blob Yocaml.Path.(rel [ "dune-project" ]);
+  [%expect {|
+    Ok: {"target": "https://github.com/xvw/kane/blob/main/dune-project",
+        "is_internal": false, "is_external": true, "kind": "external", "repr":
+         {"full": "https://github.com/xvw/kane/blob/main/dune-project", "domain":
+          "github.com", "domain_with_path":
+          "github.com/xvw/kane/blob/main/dune-project"},
+        "uri":
+         {"scheme": "https", "host": "github.com", "port": null, "path":
+          "/xvw/kane/blob/main/dune-project", "query": [], "has_scheme": true,
+         "has_host": true, "has_port": false, "has_query": false},
+        "scheme": "https"}
     |}]
 ;;

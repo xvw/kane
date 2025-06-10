@@ -49,6 +49,25 @@ type t =
   | Internal of Yocaml.Path.t * Uri.t
   | External of extern * Uri.t
 
+let host_and_path = function
+  | Internal (path, _) -> "localhost", path
+  | External ({ host; path; _ }, _) -> host, path
+;;
+
+let host u = u |> host_and_path |> fst
+let path u = u |> host_and_path |> snd
+
+let trailing_path path =
+  match Yocaml.Path.to_list path with
+  | [ "/" ] | [ "."; "/" ] -> ""
+  | _ -> Yocaml.Path.to_string path
+;;
+
+let without_scheme u =
+  let h, p = host_and_path u in
+  h ^ trailing_path p
+;;
+
 let https s =
   let uri = Uri.of_string ("https://" ^ s) in
   let scheme = Https in
@@ -175,15 +194,7 @@ let compact_target f = function
 ;;
 
 let repr_domain _ host _ _ _ = host
-
-let repr_domain_with_path _ host _ _ path =
-  let s =
-    match Yocaml.Path.to_list path with
-    | [ "/" ] | [ "."; "/" ] -> ""
-    | _ -> Yocaml.Path.to_string path
-  in
-  host ^ s
-;;
+let repr_domain_with_path _ host _ _ path = host ^ trailing_path path
 
 let repr url =
   let open Yocaml.Data in
