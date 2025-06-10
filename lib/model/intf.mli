@@ -18,7 +18,7 @@ class type html_document = object ('self)
   method meta_tags : Html_meta.t list
 
   (** Return the current configuration. *)
-  method configuration : Configuration.t option
+  method configuration : Configuration.t
 
   (** Return the object with a new title. *)
   method set_title : string option -> 'self
@@ -27,5 +27,5 @@ class type html_document = object ('self)
   method set_description : string option -> 'self
 
   (** Return the object with a new configuration. *)
-  method set_configuration : Configuration.t option -> 'self
+  method set_configuration : Configuration.t -> 'self
 end

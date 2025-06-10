@@ -1,4 +1,4 @@
-class t ?title ?description ?configuration () =
+class t ?title ?description ?(configuration = Configuration.neutral) () =
   object (self : #Intf.html_document)
     val title_value = title
     val description_value = description
@@ -11,12 +11,31 @@ class t ?title ?description ?configuration () =
     method set_configuration new_conf = {<configuration_value = new_conf>}
 
     method meta_tags =
-      Html_meta.
-        [ from_option Fun.id ~name:"description" self#description
-        ; make_opt ~name:"generator" ~content:"YOCaml"
-        ]
-      |> List.filter_map Fun.id
+      (Html_meta.
+         [ from_option Fun.id ~name:"description" self#description
+         ; make_opt ~name:"generator" ~content:"YOCaml"
+         ]
+       |> List.filter_map Fun.id)
+      @ Configuration.meta_tags configuration
   end
+
+let validate =
+  let open Yocaml.Data.Validation in
+  record (fun fields ->
+    let open Kane_util.Validation in
+    let+ title =
+      optional
+        fields
+        [ "title"; "t" ]
+        (string & Kane_util.String.ensure_not_blank)
+    and+ description =
+      optional
+        fields
+        [ "description"; "desc"; "d" ]
+        (string & Kane_util.String.ensure_not_blank)
+    in
+    new t ?title ?description ())
+;;
 
 let normalize doc =
   let open Yocaml.Data in

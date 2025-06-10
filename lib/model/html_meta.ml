@@ -19,3 +19,8 @@ let normalize { name; content } =
   let open Yocaml.Data in
   record [ "name", string name; "content", string content ]
 ;;
+
+let map_option f = function
+  | None -> []
+  | Some x -> f x
+;;

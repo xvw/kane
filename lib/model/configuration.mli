@@ -2,6 +2,7 @@
 
 type t
 
+val neutral : t
 val validate : t Kane_util.Validation.v
 val normalize : t -> Yocaml.Data.t
 val meta_tags : t -> Html_meta.t list

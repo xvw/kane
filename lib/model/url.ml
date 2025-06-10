@@ -68,15 +68,17 @@ let without_scheme u =
   h ^ trailing_path p
 ;;
 
-let https s =
-  let uri = Uri.of_string ("https://" ^ s) in
-  let scheme = Https in
+let with_scheme scheme s =
+  let uri = Uri.of_string (scheme_to_string scheme ^ "://" ^ s) in
   let host = Uri.host_with_default ~default:"localhost" uri in
   let path = Yocaml.Path.from_string (Uri.path uri) in
   let port = Uri.port uri in
   let query = uri |> Uri.query |> Kane_util.String.Map.of_list in
   External ({ scheme; host; path; port; query }, uri)
 ;;
+
+let https = with_scheme Https
+let http = with_scheme Http
 
 let recompute_uri = function
   | Internal (p, _) ->

@@ -17,3 +17,6 @@ val from_list : ('a -> string) -> name:string -> 'a list -> t option
 
 (** Converts a meta into YOCaml data. *)
 val normalize : t -> Yocaml.Data.t
+
+(** Lift an option ot a list of meta tags. *)
+val map_option : ('a -> 'b list) -> 'a option -> 'b list
