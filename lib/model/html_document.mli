@@ -5,6 +5,7 @@ class t :
   ?title:string
   -> ?description:string
   -> ?configuration:Configuration.t
+  -> ?tags:Tag.Set.t
   -> unit
   -> Intf.html_document
 

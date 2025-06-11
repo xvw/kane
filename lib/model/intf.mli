@@ -17,6 +17,9 @@ class type html_document = object ('self)
   (** Return the list of [<meta>]. *)
   method meta_tags : Html_meta.t list
 
+  (** Return the list of associated tags. *)
+  method tags : Tag.Set.t
+
   (** Return the current configuration. *)
   method configuration : Configuration.t
 
@@ -28,4 +31,7 @@ class type html_document = object ('self)
 
   (** Return the object with a new configuration. *)
   method set_configuration : Configuration.t -> 'self
+
+  (** Return the object with a new tagset. *)
+  method set_tags : Tag.Set.t -> 'self
 end

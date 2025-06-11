@@ -1,14 +1,22 @@
-class t ?title ?description ?(configuration = Configuration.neutral) () =
+class t
+  ?title
+  ?description
+  ?(configuration = Configuration.neutral)
+  ?(tags = Tag.Set.empty)
+  () =
   object (self : #Intf.html_document)
     val title_value = title
     val description_value = description
     val configuration_value = configuration
+    val tags_value = tags
     method title = title_value
     method description = description_value
     method configuration = configuration_value
+    method tags = tags_value
     method set_title new_title = {<title_value = new_title>}
     method set_description new_desc = {<description_value = new_desc>}
     method set_configuration new_conf = {<configuration_value = new_conf>}
+    method set_tags new_tags = {<tags_value = new_tags>}
 
     method meta_tags =
       (Html_meta.
@@ -17,6 +25,7 @@ class t ?title ?description ?(configuration = Configuration.neutral) () =
          ]
        |> List.filter_map Fun.id)
       @ Configuration.meta_tags configuration
+      @ Tag.Set.meta_tags tags
   end
 
 let validate =
