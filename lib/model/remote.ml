@@ -1,5 +1,5 @@
 type 'a t =
-  | Remote of Kane_util.Slug.t
+  | Remote of Id.t
   | Inline of 'a
 
 let validate ~remote ~inline =

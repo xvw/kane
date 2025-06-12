@@ -1,5 +1,6 @@
 type t =
-  { display_name : string
+  { id : Id.t
+  ; display_name : string
   ; first_name : string option
   ; last_name : string option
   ; avatar : Url.t option
@@ -17,6 +18,7 @@ type t =
 
 let make
       ~display_name
+      ?id
       ?first_name
       ?last_name
       ?avatar
@@ -32,7 +34,13 @@ let make
       ?(custom_attributes = Kane_util.String.Map.empty)
       ()
   =
+  let id =
+    match id with
+    | None -> Id.from_string display_name
+    | Some x -> x
+  in
   { display_name
+  ; id
   ; first_name
   ; last_name
   ; avatar
@@ -96,6 +104,7 @@ let validate =
         obj
         [ "display_name"; "username"; "name"; "id"; "user_name" ]
         (string & Kane_util.String.ensure_not_blank)
+    and+ id = optional obj [ "id"; "ident"; "identifier"; "i" ] Id.validate
     and+ first_name =
       optional
         obj
@@ -147,6 +156,7 @@ let validate =
     in
     make
       ~display_name
+      ?id
       ?first_name
       ?last_name
       ?avatar
@@ -165,6 +175,7 @@ let validate =
 
 let normalize
       { display_name
+      ; id
       ; first_name
       ; last_name
       ; avatar
@@ -190,7 +201,8 @@ let normalize
       <|> guard (not (List.is_empty more_accounts)))
   in
   record
-    [ "display_name", string display_name
+    [ "id", Id.normalize id
+    ; "display_name", string display_name
     ; "first_name", option string first_name
     ; "last_name", option string last_name
     ; "avatar", option Url.normalize avatar
