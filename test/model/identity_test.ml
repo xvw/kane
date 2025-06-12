@@ -1,17 +1,14 @@
 open Kane_model
 
-let dump subject =
-  subject
-  |> Identity.validate
-  |> Util_test.Dump.normalization Identity.normalize
-;;
+let dump subject = subject |> Util_test.Dump.from (module Identity)
 
 let%expect_test "identity - 1" =
   "Xavier Van de Woestyne <xavier@xvw.lol>" |> Yocaml.Data.string |> dump;
   [%expect
     {|
-    Ok: {"display_name": "Xavier Van de Woestyne", "first_name": null,
-        "last_name": null, "avatar": null, "website": null, "email":
+    Ok: {"id": "xavier-van-de-woestyne", "display_name":
+         "Xavier Van de Woestyne", "first_name": null, "last_name": null,
+        "avatar": null, "website": null, "email":
          {"address": "xavier@xvw.lol", "local": "xavier", "domain": "xvw.lol",
          "domain_fragments": ["xvw", "lol"], "address_md5":
           "8ce48f56c9de1e079ceee7f064ee38f4"},
@@ -52,8 +49,8 @@ let%expect_test "identity - 3" =
   |> dump;
   [%expect
     {|
-    Ok: {"display_name": "xvw", "first_name": "Xavier", "last_name": "Vdw",
-        "avatar": null, "website": null, "email":
+    Ok: {"id": "xvw", "display_name": "xvw", "first_name": "Xavier", "last_name":
+         "Vdw", "avatar": null, "website": null, "email":
          {"address": "me@pgp.org", "local": "me", "domain": "pgp.org",
          "domain_fragments": ["pgp", "org"], "address_md5":
           "7007bdb28b0f9dbc7dbedde36e1b7447"},
@@ -80,8 +77,8 @@ let%expect_test "identity - 4" =
   |> dump;
   [%expect
     {|
-    Ok: {"display_name": "xvw", "first_name": "Xavier", "last_name": "Vdw",
-        "avatar": null, "website": null, "email":
+    Ok: {"id": "xvw", "display_name": "xvw", "first_name": "Xavier", "last_name":
+         "Vdw", "avatar": null, "website": null, "email":
          {"address": "me@pgp.org", "local": "me", "domain": "pgp.org",
          "domain_fragments": ["pgp", "org"], "address_md5":
           "7007bdb28b0f9dbc7dbedde36e1b7447"},

@@ -24,3 +24,7 @@ let normalization normalize x =
   |> validation (fun ppf x ->
     x |> normalize |> Format.fprintf ppf "%a" Yocaml.Data.pp)
 ;;
+
+let from (module D : Intf.DUMP) subject =
+  subject |> D.validate |> normalization D.normalize
+;;

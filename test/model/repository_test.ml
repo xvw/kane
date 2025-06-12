@@ -1,10 +1,7 @@
 open Kane_model
 
 let dump subject =
-  subject
-  |> Yocaml.Data.string
-  |> Repository.validate
-  |> Util_test.Dump.normalization Repository.normalize
+  subject |> Yocaml.Data.string |> Util_test.Dump.from (module Repository)
 ;;
 
 let dump_blob ?branch path subject =
@@ -155,7 +152,8 @@ let%expect_test "repo - 5" =
 
 let%expect_test "repository resolver - 1" =
   "github/xvw/kane" |> dump_blob Yocaml.Path.(rel [ "dune-project" ]);
-  [%expect {|
+  [%expect
+    {|
     Ok: {"target": "https://github.com/xvw/kane/blob/main/dune-project",
         "is_internal": false, "is_external": true, "kind": "external", "repr":
          {"full": "https://github.com/xvw/kane/blob/main/dune-project", "domain":

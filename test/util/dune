@@ -3,5 +3,6 @@
  (package kane)
  (inline_tests)
  (libraries yocaml kane.util)
+ (modules_without_implementation intf)
  (preprocess
   (pps ppx_expect)))

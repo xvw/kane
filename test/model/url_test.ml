@@ -1,10 +1,7 @@
 open Kane_model
 
 let dump subject =
-  subject
-  |> Yocaml.Data.string
-  |> Url.validate
-  |> Util_test.Dump.normalization Url.normalize
+  subject |> Yocaml.Data.string |> Util_test.Dump.from (module Url)
 ;;
 
 let dump_url f s =

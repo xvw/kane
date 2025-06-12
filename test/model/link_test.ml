@@ -5,9 +5,7 @@ let make ?title url =
   record [ "title", option string title; "url", string url ]
 ;;
 
-let dump subject =
-  subject |> Link.validate |> Util_test.Dump.normalization Link.normalize
-;;
+let dump subject = subject |> Util_test.Dump.from (module Link)
 
 let%expect_test "link - 1" =
   dump (make "https://xvw.lol");

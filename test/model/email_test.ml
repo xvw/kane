@@ -1,10 +1,7 @@
 open Kane_model
 
 let dump subject =
-  subject
-  |> Yocaml.Data.string
-  |> Email.validate
-  |> Util_test.Dump.normalization Email.normalize
+  subject |> Yocaml.Data.string |> Util_test.Dump.from (module Email)
 ;;
 
 let%expect_test "email - 1" =

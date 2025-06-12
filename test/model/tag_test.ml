@@ -3,8 +3,7 @@ open Kane_model
 let dump subject =
   subject
   |> Yocaml.Data.(list_of string)
-  |> Tag.Set.validate
-  |> Util_test.Dump.normalization Tag.Set.normalize
+  |> Util_test.Dump.from (module Tag.Set)
 ;;
 
 let%expect_test "tagset - 1" =
