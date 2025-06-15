@@ -17,9 +17,4 @@ val ensure_not_blank : (string, string) Validation.t
 (** {1 Map} *)
 
 (** Map indexed over String. *)
-module Map : sig
-  include Stdlib.Map.S with type key = string
-
-  val validate : 'a Validation.v -> 'a t Validation.v
-  val normalize : ('a -> Yocaml.Data.t) -> 'a t -> Yocaml.Data.t
-end
+module Map : Intf.MAP with type key = string

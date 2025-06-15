@@ -40,3 +40,10 @@ let optional_or ~default fields alt validator =
   in
   loop alt
 ;;
+
+let ensure_not_blank =
+  Yocaml.Data.Validation.where
+    ~pp:Format.pp_print_string
+    ~message:(fun _ -> "Can't be blank")
+    (fun s -> not (Stdlib.String.equal "" s))
+;;

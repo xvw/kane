@@ -1,7 +1,5 @@
 (library
  (name Kane_util)
  (public_name kane.util)
- (inline_tests)
- (libraries yocaml)
- (preprocess
-  (pps ppx_expect)))
+ (modules_without_implementation intf)
+ (libraries yocaml))
