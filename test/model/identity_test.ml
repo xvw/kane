@@ -20,8 +20,7 @@ let%expect_test "identity - 1" =
          {"elements": [], "length": 0, "has_elements": false}, "attributes":
          {"elements": [], "length": 0, "has_elements": false}, "has_accounts":
          false, "has_first_name": false, "has_last_name": false, "has_avatar":
-         false, "has_website": false, "has_email": true, "has_links": false,
-        "has_emails": false, "has_attributes": false}
+         false, "has_website": false, "has_email": true, "has_links": false}
     |}]
 ;;
 
@@ -64,8 +63,7 @@ let%expect_test "identity - 3" =
          {"elements": [], "length": 0, "has_elements": false}, "attributes":
          {"elements": [], "length": 0, "has_elements": false}, "has_accounts":
          false, "has_first_name": true, "has_last_name": true, "has_avatar":
-         false, "has_website": false, "has_email": true, "has_links": false,
-        "has_emails": false, "has_attributes": false}
+         false, "has_website": false, "has_email": true, "has_links": false}
     |}]
 ;;
 
@@ -94,7 +92,6 @@ let%expect_test "identity - 4" =
          {"elements": [], "length": 0, "has_elements": false}, "attributes":
          {"elements": [], "length": 0, "has_elements": false}, "has_accounts":
          true, "has_first_name": true, "has_last_name": true, "has_avatar":
-         false, "has_website": false, "has_email": true, "has_links": false,
-        "has_emails": false, "has_attributes": false}
+         false, "has_website": false, "has_email": true, "has_links": false}
     |}]
 ;;

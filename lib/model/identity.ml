@@ -238,11 +238,6 @@ let normalize
     ; Kane_util.as_opt_bool "website" website
     ; Kane_util.as_opt_bool "email" email
     ; Kane_util.as_list_bool "links" more_links
-    ; Kane_util.has_field Kane_util.String.Map.is_empty "emails" more_emails
-    ; Kane_util.has_field
-        Kane_util.String.Map.is_empty
-        "attributes"
-        custom_attributes
     ]
 ;;
 

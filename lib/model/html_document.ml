@@ -53,6 +53,7 @@ let normalize doc =
     [ "title", option string doc#title
     ; "description", option string doc#description
     ; "meta", list_of Html_meta.normalize meta_tags
+    ; "tags", Tag.Set.normalize doc#tags
     ; Kane_util.as_opt_bool "title" doc#title
     ; Kane_util.as_opt_bool "description" doc#description
     ; Kane_util.as_list_bool "meta" meta_tags
