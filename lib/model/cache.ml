@@ -1,5 +1,5 @@
 type t =
-  { references : Yocaml.Path.t Id.Map.t
+  { references : (Yocaml.Path.t * string * string option) Id.Map.t
   ; backlinks : Id.Set.t Id.Map.t
   ; collisions : Kane_util.Path.Set.t Id.Map.t
   }
@@ -24,13 +24,16 @@ let add_backlinks id backlinks cache =
   }
 ;;
 
-let visit ~id ~path ~backlinks cache =
+let visit ~id ~path ~title ?synopsis ~backlinks cache =
   match Id.Map.find_opt id cache.references with
   | None ->
-    { cache with references = Id.Map.add id path cache.references }
+    { cache with
+      references = Id.Map.add id (path, title, synopsis) cache.references
+    }
     |> add_backlinks id backlinks
-  | Some p when Yocaml.Path.equal p path -> cache |> add_backlinks id backlinks
-  | Some p ->
+  | Some (p, _, _) when Yocaml.Path.equal p path ->
+    cache |> add_backlinks id backlinks
+  | Some (p, _, _) ->
     let collide x =
       let x = Option.value ~default:Kane_util.Path.Set.empty x in
       let c = Kane_util.Path.Set.of_list [ p; path ] in
@@ -39,9 +42,35 @@ let visit ~id ~path ~backlinks cache =
     { cache with collisions = Id.Map.update id collide cache.collisions }
 ;;
 
-(* let to_sexp { references; backlinks; collisions } = *)
-(*   let open Yocaml.Sexp in *)
-(*   node [ *)
+let collisions { collisions; _ } =
+  match Id.Map.cardinal collisions with
+  | 0 -> None
+  | _ -> Some collisions
+;;
 
-(*   ] *)
-(* ;; *)
+let missing_references { references; backlinks; _ } =
+  let s =
+    Id.Map.fold
+      (fun _id backlinks acc ->
+         Id.Set.fold
+           (fun id acc ->
+              match Id.Map.find_opt id references with
+              | None -> Id.Set.add id acc
+              | Some _ -> acc)
+           backlinks
+           acc)
+      backlinks
+      Id.Set.empty
+  in
+  match Id.Set.cardinal s with
+  | 0 -> None
+  | _ -> Some s
+;;
+
+let references { references; _ } = references
+let backlinks { backlinks; _ } = backlinks
+let reference_by_id id cache = cache |> references |> Id.Map.find_opt id
+
+let backlinks_by_id id cache =
+  cache |> backlinks |> Id.Map.find_opt id |> Option.value ~default:Id.Set.empty
+;;

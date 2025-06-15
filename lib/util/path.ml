@@ -10,5 +10,6 @@ module O = struct
   ;;
 end
 
+include O
 module Map = Map.Make (O)
 module Set = Set.Make (O)
