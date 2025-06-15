@@ -1,14 +1,19 @@
 type t = Kane_util.Slug.t
 
-let from_string x = x |> Kane_util.Slug.from
+let trim x =
+  x
+  |> Kane_util.String.remove_first_char_when (function
+    | '@' | ':' | '~' | '$' | '^' | '#' -> true
+    | _ -> false)
+  |> String.trim
+;;
+
+let from_string x = x |> trim |> Kane_util.Slug.from
 let from_slug x = from_string x
 
 let validate =
   let open Yocaml.Data.Validation in
-  string
-  $ Kane_util.String.remove_first_char_when (function
-    | '@' | ':' | '~' | '$' | '^' | '#' -> true
-    | _ -> false)
+  string $ trim
   & Kane_util.String.ensure_not_blank
   & Yocaml.Slug.validate_string
 ;;
@@ -17,3 +22,14 @@ let normalize x =
   let open Yocaml.Data in
   string x
 ;;
+
+module O = struct
+  type nonrec t = t
+
+  let compare = String.compare
+  let normalize = normalize
+  let validate = validate
+end
+
+module Set = Kane_util.Set.Make (O)
+module Map = Kane_util.Map.Make (O)
