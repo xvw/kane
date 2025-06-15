@@ -16,5 +16,5 @@ let normalize ~remote ~inline =
 
 let resolve resolver = function
   | Inline x -> Some x
-  | Remote slug -> resolver slug
+  | Remote id -> resolver id
 ;;

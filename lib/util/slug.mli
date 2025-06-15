@@ -8,3 +8,5 @@ val from
   -> ?unknown_char:char
   -> string
   -> t
+
+val from_path : Yocaml.Path.t -> t

@@ -25,3 +25,13 @@ let default_mapping =
 ;;
 
 let from ?(mapping = default_mapping) = Yocaml.Slug.from ~mapping
+
+let from_path path =
+  let p =
+    match Yocaml.Path.to_pair path with
+    | `Rel, [] -> "rel"
+    | `Root, [] -> "root"
+    | _ -> Yocaml.Path.to_string path
+  in
+  p |> from
+;;
