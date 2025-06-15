@@ -6,13 +6,33 @@ class type normalizable = object
   method fieldset : (string * Yocaml.Data.t) list
 end
 
-(** Describe a regular page. *)
-class type page_input = object
+class type with_table_of_contents = object ('self)
+  method table_of_content : string option
+  method set_table_of_content : string option -> 'self
+end
+
+class type page = object
   method title : string
-  method id : Id.t option
   method synopsis : string option
   method description : string option
   method tags : Tag.Set.t
+  method display_table_of_content : bool
+end
+
+(** Describe a regular page (as an input). *)
+class type page_input = object
+  inherit page
+  method id : Id.t option
+end
+
+(** Describe a regular page (as an output). *)
+class type page_output = object
+  inherit page
+  inherit with_table_of_contents
+  method id : Id.t
+  method configuration : Configuration.t
+  method target_path : Yocaml.Path.t
+  method source_path : Yocaml.Path.t
 end
 
 (** Describes the metadata required to create an HTML document. In
