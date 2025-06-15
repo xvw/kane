@@ -12,7 +12,6 @@ let empty =
 ;;
 
 let add_backlinks id backlinks cache =
-  let backlinks = Id.Set.of_list backlinks in
   { cache with
     backlinks =
       Id.Map.update
@@ -24,7 +23,8 @@ let add_backlinks id backlinks cache =
   }
 ;;
 
-let visit ~id ~path ~title ?synopsis ~backlinks cache =
+let visit ~id ~path ~title ?synopsis ?(backlinks = Id.Set.empty) cache =
+  let backlinks = Id.Set.remove id backlinks in
   match Id.Map.find_opt id cache.references with
   | None ->
     { cache with

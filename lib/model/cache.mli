@@ -7,7 +7,7 @@ val visit
   -> path:Yocaml.Path.t
   -> title:string
   -> ?synopsis:string
-  -> backlinks:Id.t list
+  -> ?backlinks:Id.Set.t
   -> t
   -> t
 
