@@ -18,8 +18,9 @@ let%expect_test "link - 1" =
            "xvw.lol"},
          "uri":
           {"scheme": "https", "host": "xvw.lol", "port": null, "path": "",
-          "query": [], "has_scheme": true, "has_host": true, "has_port": false,
-          "has_query": false},
+          "query": {"elements": [], "length": 0, "has_elements": false},
+          "has_scheme": true, "has_host": true, "has_port": false, "has_query":
+           false},
          "scheme": "https"}}
     |}]
 ;;
@@ -35,8 +36,9 @@ let%expect_test "link - 2" =
           "domain_with_path": "xvw.lol/foo/bar/baz"},
          "uri":
           {"scheme": "https", "host": "xvw.lol", "port": null, "path":
-           "/foo/bar/baz", "query": [], "has_scheme": true, "has_host": true,
-          "has_port": false, "has_query": false},
+           "/foo/bar/baz", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"}}
     |}]
 ;;
@@ -52,8 +54,9 @@ let%expect_test "link - 3" =
           "domain_with_path": "xvw.lol/foo/bar/baz"},
          "uri":
           {"scheme": "https", "host": "xvw.lol", "port": null, "path":
-           "/foo/bar/baz", "query": [], "has_scheme": true, "has_host": true,
-          "has_port": false, "has_query": false},
+           "/foo/bar/baz", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"}}
     |}]
 ;;

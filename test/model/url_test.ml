@@ -22,8 +22,9 @@ let%expect_test "url 1" =
           "/foo/bar/baz"},
         "uri":
          {"scheme": null, "host": null, "port": null, "path": "/foo/bar/baz",
-         "query": [], "has_scheme": false, "has_host": false, "has_port": false,
-         "has_query": false},
+         "query": {"elements": [], "length": 0, "has_elements": false},
+         "has_scheme": false, "has_host": false, "has_port": false, "has_query":
+          false},
         "scheme": null}
     |}]
 ;;
@@ -38,8 +39,9 @@ let%expect_test "url 2" =
           "./foo/bar/baz"},
         "uri":
          {"scheme": null, "host": null, "port": null, "path": "foo/bar/baz",
-         "query": [], "has_scheme": false, "has_host": false, "has_port": false,
-         "has_query": false},
+         "query": {"elements": [], "length": 0, "has_elements": false},
+         "has_scheme": false, "has_host": false, "has_port": false, "has_query":
+          false},
         "scheme": null}
     |}]
 ;;
@@ -55,8 +57,10 @@ let%expect_test "url 3" =
         "uri":
          {"scheme": null, "host": null, "port": null, "path": "foo/bar/baz",
          "query":
-          [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
-          {"key": "x", "value": ["102"]}],
+          {"elements":
+           [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
+           {"key": "x", "value": ["102"]}],
+          "length": 3, "has_elements": true},
          "has_scheme": false, "has_host": false, "has_port": false, "has_query":
           true},
         "scheme": null}
@@ -74,8 +78,10 @@ let%expect_test "url 4" =
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path":
           "/foo/bar/baz", "query":
-          [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
-          {"key": "x", "value": ["102"]}],
+          {"elements":
+           [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
+           {"key": "x", "value": ["102"]}],
+          "length": 3, "has_elements": true},
          "has_scheme": true, "has_host": true, "has_port": false, "has_query":
           true},
         "scheme": "https"}
@@ -93,8 +99,10 @@ let%expect_test "url 5" =
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": 8888, "path":
           "/foo/bar/baz", "query":
-          [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
-          {"key": "x", "value": ["102"]}],
+          {"elements":
+           [{"key": "22", "value": ["33"]}, {"key": "bar", "value": ["12"]},
+           {"key": "x", "value": ["102"]}],
+          "length": 3, "has_elements": true},
          "has_scheme": true, "has_host": true, "has_port": true, "has_query":
           true},
         "scheme": "https"}
@@ -112,8 +120,9 @@ let%expect_test "url resolve - 1" =
           "xvw.lol"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path": "/",
-         "query": [], "has_scheme": true, "has_host": true, "has_port": false,
-         "has_query": false},
+         "query": {"elements": [], "length": 0, "has_elements": false},
+         "has_scheme": true, "has_host": true, "has_port": false, "has_query":
+          false},
         "scheme": "https"}
     |}]
 ;;
@@ -129,8 +138,9 @@ let%expect_test "url resolve - 2" =
           "xvw.lol/foo"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path": "/foo",
-         "query": [], "has_scheme": true, "has_host": true, "has_port": false,
-         "has_query": false},
+         "query": {"elements": [], "length": 0, "has_elements": false},
+         "has_scheme": true, "has_host": true, "has_port": false, "has_query":
+          false},
         "scheme": "https"}
     |}]
 ;;
@@ -146,8 +156,9 @@ let%expect_test "url resolve - 3" =
          "domain_with_path": "xvw.lol/foo/bar"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path":
-          "/foo/bar", "query": [], "has_scheme": true, "has_host": true,
-         "has_port": false, "has_query": false},
+          "/foo/bar", "query":
+          {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+          true, "has_host": true, "has_port": false, "has_query": false},
         "scheme": "https"}
     |}]
 ;;
@@ -163,8 +174,9 @@ let%expect_test "url resolve - 4" =
          "domain_with_path": "xvw.lol/foo/bar/baz"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path":
-          "/foo/bar/baz", "query": [], "has_scheme": true, "has_host": true,
-         "has_port": false, "has_query": false},
+          "/foo/bar/baz", "query":
+          {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+          true, "has_host": true, "has_port": false, "has_query": false},
         "scheme": "https"}
     |}]
 ;;
@@ -180,8 +192,9 @@ let%expect_test "url resolve - 5" =
          "domain_with_path": "xvw.lol/foo/bar/foo/bar/baz"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path":
-          "/foo/bar/foo/bar/baz", "query": [], "has_scheme": true, "has_host":
-          true, "has_port": false, "has_query": false},
+          "/foo/bar/foo/bar/baz", "query":
+          {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+          true, "has_host": true, "has_port": false, "has_query": false},
         "scheme": "https"}
     |}]
 ;;
@@ -197,8 +210,9 @@ let%expect_test "url resolve - 6" =
          "domain_with_path": "xvw.lol/a/b/c"},
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path": "/a/b/c",
-         "query": [], "has_scheme": true, "has_host": true, "has_port": false,
-         "has_query": false},
+         "query": {"elements": [], "length": 0, "has_elements": false},
+         "has_scheme": true, "has_host": true, "has_port": false, "has_query":
+          false},
         "scheme": "https"}
     |}]
 ;;
@@ -216,8 +230,10 @@ let%expect_test "url resolve - 7" =
         "uri":
          {"scheme": "https", "host": "xvw.lol", "port": null, "path": "/a/b/c",
          "query":
-          [{"key": "a", "value": ["foo"]},
-          {"key": "k", "value": ["1", "2", "4"]}],
+          {"elements":
+           [{"key": "a", "value": ["foo"]},
+           {"key": "k", "value": ["1", "2", "4"]}],
+          "length": 2, "has_elements": true},
          "has_scheme": true, "has_host": true, "has_port": false, "has_query":
           true},
         "scheme": "https"}

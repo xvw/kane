@@ -25,7 +25,7 @@ class t
          ]
        |> List.filter_map Fun.id)
       @ Configuration.meta_tags configuration
-      @ Tag.Set.meta_tags tags
+      @ Tag.meta_tags tags
   end
 
 let validate =

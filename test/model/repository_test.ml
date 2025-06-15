@@ -37,8 +37,9 @@ let%expect_test "repo - 2" =
           "domain_with_path": "github.com/xvw/kane"},
          "uri":
           {"scheme": "https", "host": "github.com", "port": null, "path":
-           "/xvw/kane", "query": [], "has_scheme": true, "has_host": true,
-          "has_port": false, "has_query": false},
+           "/xvw/kane", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "bug-tracker":
          {"target": "https://github.com/xvw/kane/issues", "is_internal": false,
@@ -47,8 +48,9 @@ let%expect_test "repo - 2" =
           "domain_with_path": "github.com/xvw/kane/issues"},
          "uri":
           {"scheme": "https", "host": "github.com", "port": null, "path":
-           "/xvw/kane/issues", "query": [], "has_scheme": true, "has_host":
-           true, "has_port": false, "has_query": false},
+           "/xvw/kane/issues", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
          {"https": "https://github.com/xvw/kane.git", "ssh":
@@ -68,8 +70,9 @@ let%expect_test "repo - 3" =
           "domain_with_path": "github.com/xvw/kane"},
          "uri":
           {"scheme": "https", "host": "github.com", "port": null, "path":
-           "/xvw/kane", "query": [], "has_scheme": true, "has_host": true,
-          "has_port": false, "has_query": false},
+           "/xvw/kane", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "bug-tracker":
          {"target": "https://github.com/xvw/kane/issues", "is_internal": false,
@@ -78,8 +81,9 @@ let%expect_test "repo - 3" =
           "domain_with_path": "github.com/xvw/kane/issues"},
          "uri":
           {"scheme": "https", "host": "github.com", "port": null, "path":
-           "/xvw/kane/issues", "query": [], "has_scheme": true, "has_host":
-           true, "has_port": false, "has_query": false},
+           "/xvw/kane/issues", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
          {"https": "https://github.com/xvw/kane.git", "ssh":
@@ -99,8 +103,9 @@ let%expect_test "repo - 4" =
           "domain_with_path": "tangled.sh/@xvw.lol/kane"},
          "uri":
           {"scheme": "https", "host": "tangled.sh", "port": null, "path":
-           "/@xvw.lol/kane", "query": [], "has_scheme": true, "has_host": true,
-          "has_port": false, "has_query": false},
+           "/@xvw.lol/kane", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "bug-tracker":
          {"target": "https://tangled.sh/@xvw.lol/kane/issues", "is_internal":
@@ -109,8 +114,9 @@ let%expect_test "repo - 4" =
            "tangled.sh", "domain_with_path": "tangled.sh/@xvw.lol/kane/issues"},
          "uri":
           {"scheme": "https", "host": "tangled.sh", "port": null, "path":
-           "/@xvw.lol/kane/issues", "query": [], "has_scheme": true, "has_host":
-           true, "has_port": false, "has_query": false},
+           "/@xvw.lol/kane/issues", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
          {"https": "https://tangled.sh/@xvw.lol/kane", "ssh":
@@ -130,8 +136,9 @@ let%expect_test "repo - 5" =
            "gitlab.com", "domain_with_path": "gitlab.com/funkywork/yocaml"},
          "uri":
           {"scheme": "https", "host": "gitlab.com", "port": null, "path":
-           "/funkywork/yocaml", "query": [], "has_scheme": true, "has_host":
-           true, "has_port": false, "has_query": false},
+           "/funkywork/yocaml", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "bug-tracker":
          {"target": "https://gitlab.com/funkywork/yocaml/-/issues",
@@ -141,8 +148,9 @@ let%expect_test "repo - 5" =
            "gitlab.com/funkywork/yocaml/-/issues"},
          "uri":
           {"scheme": "https", "host": "gitlab.com", "port": null, "path":
-           "/funkywork/yocaml/-/issues", "query": [], "has_scheme": true,
-          "has_host": true, "has_port": false, "has_query": false},
+           "/funkywork/yocaml/-/issues", "query":
+           {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+           true, "has_host": true, "has_port": false, "has_query": false},
          "scheme": "https"},
         "clone":
          {"https": "https://gitlab.com/funkywork/yocaml.git", "ssh":
@@ -161,8 +169,9 @@ let%expect_test "repository resolver - 1" =
           "github.com/xvw/kane/blob/main/dune-project"},
         "uri":
          {"scheme": "https", "host": "github.com", "port": null, "path":
-          "/xvw/kane/blob/main/dune-project", "query": [], "has_scheme": true,
-         "has_host": true, "has_port": false, "has_query": false},
+          "/xvw/kane/blob/main/dune-project", "query":
+          {"elements": [], "length": 0, "has_elements": false}, "has_scheme":
+          true, "has_host": true, "has_port": false, "has_query": false},
         "scheme": "https"}
     |}]
 ;;

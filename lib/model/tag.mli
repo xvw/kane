@@ -5,13 +5,6 @@ type t
 val normalize : t -> Yocaml.Data.t
 val validate : t Kane_util.Validation.v
 
-module Set : sig
-  (** Describes tag set (for indexing). *)
+module Set : Kane_util.Intf.SET with type elt = t
 
-  type t
-
-  val empty : t
-  val validate : t Kane_util.Validation.v
-  val normalize : t -> Yocaml.Data.t
-  val meta_tags : t -> Html_meta.t list
-end
+val meta_tags : Set.t -> Html_meta.t list

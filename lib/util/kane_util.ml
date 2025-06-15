@@ -1,7 +1,10 @@
+module Intf = Intf
+module Validation = Validation
+module Set = Set
+module Map = Map
 module String = String
 module List = List
 module Option = Option
-module Validation = Validation
 module Slug = Slug
 
 let mk_has_field field = "has_" ^ field

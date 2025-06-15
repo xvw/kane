@@ -21,38 +21,22 @@ let normalize { slug; repr } =
   record [ "slug", string slug; "text", string repr ]
 ;;
 
-module Set = struct
-  include Stdlib.Set.Make (struct
-      type nonrec t = t
+module Set = Kane_util.Set.Make (struct
+    type nonrec t = t
 
-      let compare = compare
-    end)
+    let compare = compare
+    let validate = validate
+    let normalize = normalize
+  end)
 
-  let empty = empty
-
-  let validate =
-    let open Yocaml.Data.Validation in
-    list_of (string $ make) $ of_list
-  ;;
-
-  let normalize set =
-    let open Yocaml.Data in
-    record
-      [ "all", list_of normalize (to_list set)
-      ; "length", int (cardinal set)
-      ; "has_tags", bool (not (is_empty set))
-      ]
-  ;;
-
-  let meta_tags set =
-    if is_empty set
-    then []
-    else (
-      let content =
-        set
-        |> to_list
-        |> Kane_util.String.concat_with (fun { repr; _ } -> repr) ", "
-      in
-      [ Html_meta.make ~name:"keywords" ~content ])
-  ;;
-end
+let meta_tags set =
+  if Set.is_empty set
+  then []
+  else (
+    let content =
+      set
+      |> Set.to_list
+      |> Kane_util.String.concat_with (fun { repr; _ } -> repr) ", "
+    in
+    [ Html_meta.make ~name:"keywords" ~content ])
+;;
