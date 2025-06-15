@@ -9,5 +9,4 @@ class t :
   -> unit
   -> Intf.html_document
 
-val validate : t Kane_util.Validation.v
 val normalize : #Intf.html_document -> Yocaml.Data.t

@@ -25,4 +25,4 @@ val optional_or
   -> 'a v
   -> 'a Yocaml.Data.Validation.validated_record
 
-val ensure_not_blank : (string, string) t
+val ensure_not_blank : string v

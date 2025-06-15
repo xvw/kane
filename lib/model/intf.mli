@@ -2,36 +2,32 @@
     modules) that can be used to build archetypes of generated
     documents on demand. *)
 
-(** Describes the metadata required to create an HTML page. In
-    general, all data sources end up producing an expression of this
-    type to be used as template provisions. *)
-class type html_document = object ('self)
-  (** Describes what will probably be used to characterise the page
-      title (via [<title>]). *)
-  method title : string option
+class type normalizable = object
+  method fieldset : (string * Yocaml.Data.t) list
+end
 
-  (** Describes the description of a document. Used to compute
-      [<meta>]. *)
+(** Describe a regular page. *)
+class type page_input = object
+  method title : string
+  method id : Id.t option
+  method synopsis : string option
   method description : string option
-
-  (** Return the list of [<meta>]. *)
-  method meta_tags : Html_meta.t list
-
-  (** Return the list of associated tags. *)
   method tags : Tag.Set.t
+end
 
-  (** Return the current configuration. *)
+(** Describes the metadata required to create an HTML document. In
+    general, all data sources end up producing an expression of this
+    type to be used as template provisions. Usual archetype uses
+    [html_document] to produce concrete page. *)
+class type html_document = object ('self)
+  inherit normalizable
+  method title : string option
+  method description : string option
+  method meta_tags : Html_meta.t list
+  method tags : Tag.Set.t
   method configuration : Configuration.t
-
-  (** Return the object with a new title. *)
   method set_title : string option -> 'self
-
-  (** Return the object with a new description. *)
   method set_description : string option -> 'self
-
-  (** Return the object with a new configuration. *)
   method set_configuration : Configuration.t -> 'self
-
-  (** Return the object with a new tagset. *)
   method set_tags : Tag.Set.t -> 'self
 end

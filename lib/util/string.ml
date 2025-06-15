@@ -1,5 +1,3 @@
-let ensure_not_blank = Validation.ensure_not_blank
-
 (* TODO: maybe to be improved. *)
 let to_list x = x |> Stdlib.String.to_seq |> Stdlib.List.of_seq
 
@@ -27,7 +25,7 @@ module Map = Map.Make (struct
     type t = string
 
     let compare = Stdlib.String.compare
-    let validate = Yocaml.Data.Validation.(string & ensure_not_blank)
+    let validate = Validation.ensure_not_blank
     let normalize = Yocaml.Data.string
   end)
 
@@ -38,4 +36,13 @@ let concat_with f sep list =
        acc ^ sep ^ f x)
     ""
     list
+;;
+
+let ensure_not_blank =
+  let open Yocaml.Data.Validation in
+  (fun x -> Ok (Stdlib.String.trim x))
+  & where
+      ~pp:Format.pp_print_string
+      ~message:(fun _ -> "Can't be blank")
+      (fun s -> not (Stdlib.String.equal "" s))
 ;;

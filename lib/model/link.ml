@@ -25,10 +25,7 @@ let validate =
     let open Kane_util.Validation in
     let+ url = required fields [ "href"; "url"; "target" ] Url.validate
     and+ title =
-      optional
-        fields
-        [ "title"; "name" ]
-        (string & Kane_util.String.ensure_not_blank)
+      optional fields [ "title"; "name" ] Kane_util.Validation.ensure_not_blank
     in
     make ?title url)
 ;;

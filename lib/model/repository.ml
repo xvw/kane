@@ -71,9 +71,9 @@ let validate_path =
   let open Yocaml.Data.Validation in
   record (fun o ->
     let+ user =
-      required o "user" (string & Kane_util.String.ensure_not_blank & remove_at)
+      required o "user" (Kane_util.Validation.ensure_not_blank & remove_at)
     and+ repository =
-      required o "repository" (string & Kane_util.String.ensure_not_blank)
+      required o "repository" Kane_util.Validation.ensure_not_blank
     in
     { user; repository })
 ;;
@@ -82,11 +82,10 @@ let validate_gitlab =
   let open Yocaml.Data.Validation in
   (validate_path $ fun x -> Gitlab.User x)
   / record (fun o ->
-    let+ name = required o "name" (string & Kane_util.String.ensure_not_blank)
-    and+ project =
-      required o "project" (string & Kane_util.String.ensure_not_blank)
+    let+ name = required o "name" Kane_util.Validation.ensure_not_blank
+    and+ project = required o "project" Kane_util.Validation.ensure_not_blank
     and+ repository =
-      required o "repository" (string & Kane_util.String.ensure_not_blank)
+      required o "repository" Kane_util.Validation.ensure_not_blank
     in
     Gitlab.Org { name; project; repository })
 ;;

@@ -86,10 +86,7 @@ let mastodon =
   record (fun obj ->
     let+ instance = required obj "instance" Url.validate
     and+ username =
-      Kane_util.Validation.required
-        obj
-        []
-        (string & Kane_util.String.ensure_not_blank)
+      Kane_util.Validation.required obj [] Kane_util.Validation.ensure_not_blank
     in
     instance, username)
 ;;
@@ -103,18 +100,18 @@ let validate =
       required
         obj
         [ "display_name"; "username"; "name"; "id"; "user_name" ]
-        (string & Kane_util.String.ensure_not_blank)
+        Kane_util.Validation.ensure_not_blank
     and+ id = optional obj [ "id"; "ident"; "identifier"; "i" ] Id.validate
     and+ first_name =
       optional
         obj
         [ "first_name"; "firstname" ]
-        (string & Kane_util.String.ensure_not_blank)
+        Kane_util.Validation.ensure_not_blank
     and+ last_name =
       optional
         obj
         [ "last_name"; "lastname" ]
-        (string & Kane_util.String.ensure_not_blank)
+        Kane_util.Validation.ensure_not_blank
     and+ avatar = optional obj [ "avatar" ] Url.validate
     and+ website = optional obj [ "site"; "website"; "url" ] Link.validate
     and+ email = optional obj [ "email"; "mail" ] Email.validate

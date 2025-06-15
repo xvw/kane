@@ -26,36 +26,21 @@ class t
        |> List.filter_map Fun.id)
       @ Configuration.meta_tags configuration
       @ Tag.meta_tags tags
-  end
 
-let validate =
-  let open Yocaml.Data.Validation in
-  record (fun fields ->
-    let open Kane_util.Validation in
-    let+ title =
-      optional
-        fields
-        [ "title"; "t" ]
-        (string & Kane_util.String.ensure_not_blank)
-    and+ description =
-      optional
-        fields
-        [ "description"; "desc"; "d" ]
-        (string & Kane_util.String.ensure_not_blank)
-    in
-    new t ?title ?description ())
-;;
+    method fieldset =
+      let meta_tags = self#meta_tags in
+      let open Yocaml.Data in
+      [ "title", option string self#title
+      ; "description", option string self#description
+      ; "meta", list_of Html_meta.normalize meta_tags
+      ; "tags", Tag.Set.normalize self#tags
+      ; Kane_util.as_opt_bool "title" self#title
+      ; Kane_util.as_opt_bool "description" self#description
+      ; Kane_util.as_list_bool "meta" meta_tags
+      ]
+  end
 
 let normalize doc =
   let open Yocaml.Data in
-  let meta_tags = doc#meta_tags in
-  record
-    [ "title", option string doc#title
-    ; "description", option string doc#description
-    ; "meta", list_of Html_meta.normalize meta_tags
-    ; "tags", Tag.Set.normalize doc#tags
-    ; Kane_util.as_opt_bool "title" doc#title
-    ; Kane_util.as_opt_bool "description" doc#description
-    ; Kane_util.as_list_bool "meta" meta_tags
-    ]
+  record doc#fieldset
 ;;

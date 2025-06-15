@@ -9,9 +9,6 @@ val to_list : string -> char list
 val from_list : char list -> string
 val char_at : string -> int -> char option
 val remove_first_char_when : (char -> bool) -> string -> string
-
-(** {1 Validators} *)
-
 val ensure_not_blank : (string, string) Validation.t
 
 (** {1 Map} *)
