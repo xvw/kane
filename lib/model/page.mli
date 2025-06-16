@@ -4,9 +4,11 @@ module Input : Yocaml.Required.DATA_READABLE
 
 (** Write a page. *)
 
-class t :
-  configuration:Configuration.t
+type t
+
+val visit
+  :  configuration:Configuration.t
   -> source:Yocaml.Path.t
   -> target:Yocaml.Path.t
-  -> #Intf.page_input
-  -> Intf.page_output
+  -> Cache.t
+  -> Cache.t Yocaml.Eff.t

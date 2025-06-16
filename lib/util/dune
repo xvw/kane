@@ -2,4 +2,4 @@
  (name Kane_util)
  (public_name kane.util)
  (modules_without_implementation intf)
- (libraries yocaml))
+ (libraries yocaml cmarkit))

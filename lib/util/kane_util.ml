@@ -7,6 +7,7 @@ module List = List
 module Option = Option
 module Slug = Slug
 module Path = Path
+module Markdown = Markdown
 
 let mk_has_field field = "has_" ^ field
 

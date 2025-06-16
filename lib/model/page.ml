@@ -76,7 +76,7 @@ let id_of target input =
   Option.value ~default input#id
 ;;
 
-class t ~configuration ~source ~target input =
+class page ~configuration ~source ~target input =
   object (_ : #Intf.page_output)
     inherit
       common
@@ -100,10 +100,32 @@ class t ~configuration ~source ~target input =
     method set_table_of_content new_toc = {<table_of_content_value = new_toc>}
   end
 
-(* let visit ~source ~target cache = *)
-(*   let open Yocaml.Eff in *)
-(*   let* meta, content = *)
-(*     Yocaml_yaml.Eff.read_file_with_metadata ~on:`Source (module Input) source *)
-(*   in *)
-(*   assert false *)
-(* ;; *)
+type t = Intf.page_output
+
+let collect_links_of_meta _ = Id.Set.empty
+
+let collect_links source =
+  let open Yocaml.Eff in
+  let+ meta, content =
+    Yocaml_yaml.Eff.read_file_with_metadata ~on:`Source (module Input) source
+  in
+  ( content
+    |> Kane_util.Markdown.collect_links
+    |> Stdlib.List.map Id.from_string
+    |> Id.Set.of_list
+    |> Id.Set.union (collect_links_of_meta meta)
+  , meta )
+;;
+
+let visit ~configuration ~source ~target cache =
+  let open Yocaml.Eff in
+  let+ links, input_meta = collect_links source in
+  let meta = new page ~configuration ~source ~target input_meta in
+  Cache.visit
+    ~id:meta#id
+    ~path:target
+    ~title:meta#title
+    ?synopsis:meta#synopsis
+    ~links
+    cache
+;;

@@ -9,6 +9,7 @@ module List = List
 module Option = Option
 module Slug = Slug
 module Path = Path
+module Markdown = Markdown
 
 (** [has_field is_empty field opt] compute the [has_field] using [is_empty]. *)
 val has_field : ('a -> bool) -> string -> 'a -> string * Yocaml.Data.t
