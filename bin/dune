@@ -1,0 +1,4 @@
+(executable
+ (name hearst_castle)
+ (public_name hearst_castle)
+ (package hearst_castle))

@@ -29,3 +29,17 @@
   (ocp-indent :with-dev-setup)
   (merlin :with-dev-setup)
   (ocaml-lsp-server :with-dev-setup)))
+
+(package
+ (name hearst_castle)
+ (synopsis "A small personal Wiki engine")
+ (description "A small personal Wiki engine for interconnecting pages")
+ (depends
+  (ocaml (>= 5.2.0))
+  (kane (= :version))
+  yocaml
+  yocaml_yaml
+  yocaml_cmarkit
+  yocaml_otoml
+  yocaml_syndication
+  yocaml_eio))

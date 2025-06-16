@@ -1,0 +1,4 @@
+(library
+ (name kane_resolver)
+ (public_name kane.resolver)
+ (libraries yocaml))
