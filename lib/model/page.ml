@@ -19,7 +19,14 @@ class common
   end
 
 module Input = struct
-  class t ?id ~title ?synopsis ?description ?display_table_of_content ?tags () =
+  class page
+    ?id
+    ~title
+    ?synopsis
+    ?description
+    ?display_table_of_content
+    ?tags
+    () =
     object (_ : #Intf.page_input)
       inherit
         common ~title ?synopsis ?description ?display_table_of_content ?tags ()
@@ -27,6 +34,11 @@ module Input = struct
       val id_value = id
       method id = id_value
     end
+
+  type t = Intf.page_input
+
+  let entity_name = "Page"
+  let neutral = Yocaml.Metadata.required entity_name
 
   let validate =
     let open Yocaml.Data.Validation in
@@ -48,9 +60,21 @@ module Input = struct
           ]
           bool
       in
-      new t ?id ~title ?synopsis ?description ?display_table_of_content ?tags ())
+      new page
+        ?id
+        ~title
+        ?synopsis
+        ?description
+        ?display_table_of_content
+        ?tags
+        ())
   ;;
 end
+
+let id_of target input =
+  let default = target |> Id.from_path in
+  Option.value ~default input#id
+;;
 
 class t ~configuration ~source ~target input =
   object (_ : #Intf.page_output)
@@ -67,11 +91,7 @@ class t ~configuration ~source ~target input =
     val source_value = source
     val target_value = target
     val table_of_content_value = None
-
-    val id_value =
-      let default = target |> Id.from_path in
-      Option.value ~default input#id
-
+    val id_value = id_of target input
     method id = id_value
     method configuration = configuration_value
     method table_of_content = table_of_content_value
@@ -79,3 +99,11 @@ class t ~configuration ~source ~target input =
     method target_path = target_value
     method set_table_of_content new_toc = {<table_of_content_value = new_toc>}
   end
+
+(* let visit ~source ~target cache = *)
+(*   let open Yocaml.Eff in *)
+(*   let* meta, content = *)
+(*     Yocaml_yaml.Eff.read_file_with_metadata ~on:`Source (module Input) source *)
+(*   in *)
+(*   assert false *)
+(* ;; *)
