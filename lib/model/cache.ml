@@ -11,20 +11,24 @@ let empty =
   }
 ;;
 
-let add_backlinks id backlinks cache =
-  { cache with
-    backlinks =
-      Id.Map.update
-        id
-        (function
-          | None -> Some backlinks
-          | Some u -> Some (Id.Set.union u backlinks))
-        cache.backlinks
-  }
+let add_backlinks back_id links cache =
+  let backlinks =
+    Id.Set.fold
+      (fun id backlinks ->
+         Id.Map.update
+           id
+           (function
+             | None -> Some (Id.Set.singleton back_id)
+             | Some x -> Some (Id.Set.add back_id x))
+           backlinks)
+      links
+      cache.backlinks
+  in
+  { cache with backlinks }
 ;;
 
-let visit ~id ~path ~title ?synopsis ?(backlinks = Id.Set.empty) cache =
-  let backlinks = Id.Set.remove id backlinks in
+let visit ~id ~path ~title ?synopsis ?(links = Id.Set.empty) cache =
+  let backlinks = Id.Set.remove id links in
   match Id.Map.find_opt id cache.references with
   | None ->
     { cache with

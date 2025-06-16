@@ -48,11 +48,7 @@ let%expect_test "from a singleton cache" =
       [{"key": "xvw", "value":
         {"fst": "./users/xvw", "snd": {"fst": "Xavier's user page", "snd": null}}}],
      "length": 1, "has_elements": true},
-    "backlinks":
-     {"elements":
-      [{"key": "xvw", "value":
-        {"elements": [], "length": 0, "has_elements": false}}],
-     "length": 1, "has_elements": true},
+    "backlinks": {"elements": [], "length": 0, "has_elements": false},
     "collisions": null, "missing_references": null}
     |}]
 ;;
@@ -92,17 +88,7 @@ let%expect_test "from a more complicated cache" =
       {"key": "xvw", "value":
        {"fst": "./users/xvw", "snd": {"fst": "Xavier's user page", "snd": null}}}],
      "length": 4, "has_elements": true},
-    "backlinks":
-     {"elements":
-      [{"key": "grm", "value":
-        {"elements": [], "length": 0, "has_elements": false}},
-      {"key": "msp", "value":
-       {"elements": [], "length": 0, "has_elements": false}},
-      {"key": "xhtmlboi", "value":
-       {"elements": [], "length": 0, "has_elements": false}},
-      {"key": "xvw", "value":
-       {"elements": [], "length": 0, "has_elements": false}}],
-     "length": 4, "has_elements": true},
+    "backlinks": {"elements": [], "length": 0, "has_elements": false},
     "collisions": null, "missing_references": null}
     |}]
 ;;
@@ -116,22 +102,22 @@ let%expect_test "from a more complicated cache and backlinks" =
          ~id:(Id.from_slug "@xvw")
          ~path:(Yocaml.Path.rel [ "users"; "xvw" ])
          ~title:"Xavier's user page"
-         ~backlinks:(ids [ "@grm"; "msp" ])
+         ~links:(ids [ "@grm"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@grm")
          ~path:(Yocaml.Path.rel [ "users"; "grm" ])
          ~title:"Grim's user page"
-         ~backlinks:(ids [ "@xhtmlboi"; "xvw" ])
+         ~links:(ids [ "@xhtmlboi"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboi" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:
+         ~links:
            (ids
               [ "@grm"
               ; "msp" (* ensure that MSP is removed. *)
@@ -157,10 +143,10 @@ let%expect_test "from a more complicated cache and backlinks" =
     "backlinks":
      {"elements":
       [{"key": "grm", "value":
-        {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
+        {"elements": ["msp", "xhtmlboi", "xvw"], "length": 3, "has_elements":
+         true}},
       {"key": "msp", "value":
-       {"elements": ["grm", "xhtmlboi", "xvw"], "length": 3, "has_elements":
-        true}},
+       {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
       {"key": "xhtmlboi", "value":
        {"elements": ["grm", "msp"], "length": 2, "has_elements": true}},
       {"key": "xvw", "value":
@@ -177,22 +163,22 @@ let%expect_test "with missing references" =
          ~id:(Id.from_slug "@xvw")
          ~path:(Yocaml.Path.rel [ "users"; "xvw" ])
          ~title:"Xavier's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "fofooo" ])
+         ~links:(ids [ "@grm"; "msp"; "fofooo" ])
     |> Cache.visit
          ~id:(Id.from_slug "@grm")
          ~path:(Yocaml.Path.rel [ "users"; "grm" ])
          ~title:"Grim's user page"
-         ~backlinks:(ids [ "@xhtmlboi"; "xvw"; "fofooo" ])
+         ~links:(ids [ "@xhtmlboi"; "xvw"; "fofooo" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboi" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "xvw"; "xhtmlboi"; "bar" ])
+         ~links:(ids [ "@grm"; "msp"; "xvw"; "xhtmlboi"; "bar" ])
   in
   dump cache;
   [%expect
@@ -211,19 +197,21 @@ let%expect_test "with missing references" =
      "length": 4, "has_elements": true},
     "backlinks":
      {"elements":
-      [{"key": "grm", "value":
-        {"elements": ["fofooo", "xhtmlboi", "xvw"], "length": 3, "has_elements":
-         true}},
+      [{"key": "bar", "value":
+        {"elements": ["msp"], "length": 1, "has_elements": true}},
+      {"key": "fofooo", "value":
+       {"elements": ["grm", "xvw"], "length": 2, "has_elements": true}},
+      {"key": "grm", "value":
+       {"elements": ["msp", "xhtmlboi", "xvw"], "length": 3, "has_elements":
+        true}},
       {"key": "msp", "value":
-       {"elements": ["bar", "grm", "xhtmlboi", "xvw"], "length": 4,
-       "has_elements": true}},
+       {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
       {"key": "xhtmlboi", "value":
        {"elements": ["grm", "msp"], "length": 2, "has_elements": true}},
       {"key": "xvw", "value":
-       {"elements": ["fofooo", "grm", "msp"], "length": 3, "has_elements": true}}],
-     "length": 4, "has_elements": true},
-    "collisions": null, "missing_references":
-     {"elements": ["bar", "fofooo"], "length": 2, "has_elements": true}}
+       {"elements": ["grm", "msp"], "length": 2, "has_elements": true}}],
+     "length": 6, "has_elements": true},
+    "collisions": null, "missing_references": null}
     |}]
 ;;
 
@@ -234,27 +222,27 @@ let%expect_test "with fair collision" =
          ~id:(Id.from_slug "@xvw")
          ~path:(Yocaml.Path.rel [ "users"; "xvw" ])
          ~title:"Xavier's user page"
-         ~backlinks:(ids [ "@grm"; "msp" ])
+         ~links:(ids [ "@grm"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@grm")
          ~path:(Yocaml.Path.rel [ "users"; "grm" ])
          ~title:"Grim's user page"
-         ~backlinks:(ids [ "@xhtmlboi"; "xvw" ])
+         ~links:(ids [ "@xhtmlboi"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboi" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "xhtmlboi" ])
+         ~links:(ids [ "@grm"; "msp"; "xhtmlboi" ])
     |> Cache.visit
          ~id:(Id.from_slug "msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "msp"; "xvw" ])
+         ~links:(ids [ "msp"; "xvw" ])
   in
   dump cache;
   [%expect
@@ -274,10 +262,10 @@ let%expect_test "with fair collision" =
     "backlinks":
      {"elements":
       [{"key": "grm", "value":
-        {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
+        {"elements": ["msp", "xhtmlboi", "xvw"], "length": 3, "has_elements":
+         true}},
       {"key": "msp", "value":
-       {"elements": ["grm", "xhtmlboi", "xvw"], "length": 3, "has_elements":
-        true}},
+       {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
       {"key": "xhtmlboi", "value":
        {"elements": ["grm", "msp"], "length": 2, "has_elements": true}},
       {"key": "xvw", "value":
@@ -294,32 +282,32 @@ let%expect_test "with invalid collisions" =
          ~id:(Id.from_slug "@xvw")
          ~path:(Yocaml.Path.rel [ "users"; "xvw" ])
          ~title:"Xavier's user page"
-         ~backlinks:(ids [ "@grm"; "msp" ])
+         ~links:(ids [ "@grm"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@grm")
          ~path:(Yocaml.Path.rel [ "users"; "grm" ])
          ~title:"Grim's user page"
-         ~backlinks:(ids [ "@xhtmlboi"; "xvw" ])
+         ~links:(ids [ "@xhtmlboi"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboi" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
     |> Cache.visit
          ~id:(Id.from_slug "@msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "xhtmlboi" ])
+         ~links:(ids [ "@grm"; "msp"; "xhtmlboi" ])
     |> Cache.visit
          ~id:(Id.from_slug "msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp2" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "msp"; "xvw" ])
+         ~links:(ids [ "msp"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboyz" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
   in
   dump cache;
   [%expect
@@ -339,13 +327,14 @@ let%expect_test "with invalid collisions" =
     "backlinks":
      {"elements":
       [{"key": "grm", "value":
-        {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
+        {"elements": ["msp", "xhtmlboi", "xvw"], "length": 3, "has_elements":
+         true}},
       {"key": "msp", "value":
-       {"elements": ["grm", "xhtmlboi"], "length": 2, "has_elements": true}},
+       {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
       {"key": "xhtmlboi", "value":
        {"elements": ["grm", "msp"], "length": 2, "has_elements": true}},
       {"key": "xvw", "value":
-       {"elements": ["grm", "msp"], "length": 2, "has_elements": true}}],
+       {"elements": ["grm"], "length": 1, "has_elements": true}}],
      "length": 4, "has_elements": true},
     "collisions":
      {"elements":
@@ -367,32 +356,32 @@ let%expect_test "with invalid collisions and missing references" =
          ~id:(Id.from_slug "@xvw")
          ~path:(Yocaml.Path.rel [ "users"; "xvw" ])
          ~title:"Xavier's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "foo" ])
+         ~links:(ids [ "@grm"; "msp"; "foo" ])
     |> Cache.visit
          ~id:(Id.from_slug "@grm")
          ~path:(Yocaml.Path.rel [ "users"; "grm" ])
          ~title:"Grim's user page"
-         ~backlinks:(ids [ "@xhtmlboi"; "xvw" ])
+         ~links:(ids [ "@xhtmlboi"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboi" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp"; "bar" ])
+         ~links:(ids [ "@grm"; "msp"; "msp"; "bar" ])
     |> Cache.visit
          ~id:(Id.from_slug "@msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "xhtmlboi" ])
+         ~links:(ids [ "@grm"; "msp"; "xhtmlboi" ])
     |> Cache.visit
          ~id:(Id.from_slug "msp")
          ~path:(Yocaml.Path.rel [ "users"; "msp2" ])
          ~title:"Msp's user page"
-         ~backlinks:(ids [ "msp"; "xvw" ])
+         ~links:(ids [ "msp"; "xvw" ])
     |> Cache.visit
          ~id:(Id.from_slug "@xhtmlboi")
          ~path:(Yocaml.Path.rel [ "users"; "xhtmlboyz" ])
          ~title:"XHTMLBoy's user page"
-         ~backlinks:(ids [ "@grm"; "msp"; "msp" ])
+         ~links:(ids [ "@grm"; "msp"; "msp" ])
   in
   dump cache;
   [%expect
@@ -411,15 +400,20 @@ let%expect_test "with invalid collisions and missing references" =
      "length": 4, "has_elements": true},
     "backlinks":
      {"elements":
-      [{"key": "grm", "value":
-        {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
+      [{"key": "bar", "value":
+        {"elements": ["xhtmlboi"], "length": 1, "has_elements": true}},
+      {"key": "foo", "value":
+       {"elements": ["xvw"], "length": 1, "has_elements": true}},
+      {"key": "grm", "value":
+       {"elements": ["msp", "xhtmlboi", "xvw"], "length": 3, "has_elements":
+        true}},
       {"key": "msp", "value":
-       {"elements": ["grm", "xhtmlboi"], "length": 2, "has_elements": true}},
+       {"elements": ["xhtmlboi", "xvw"], "length": 2, "has_elements": true}},
       {"key": "xhtmlboi", "value":
-       {"elements": ["bar", "grm", "msp"], "length": 3, "has_elements": true}},
+       {"elements": ["grm", "msp"], "length": 2, "has_elements": true}},
       {"key": "xvw", "value":
-       {"elements": ["foo", "grm", "msp"], "length": 3, "has_elements": true}}],
-     "length": 4, "has_elements": true},
+       {"elements": ["grm"], "length": 1, "has_elements": true}}],
+     "length": 6, "has_elements": true},
     "collisions":
      {"elements":
       [{"key": "msp", "value":
@@ -429,7 +423,6 @@ let%expect_test "with invalid collisions and missing references" =
        {"elements": ["./users/xhtmlboi", "./users/xhtmlboyz"], "length": 2,
        "has_elements": true}}],
      "length": 2, "has_elements": true},
-    "missing_references":
-     {"elements": ["bar", "foo"], "length": 2, "has_elements": true}}
+    "missing_references": null}
     |}]
 ;;
