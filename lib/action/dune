@@ -1,5 +1,5 @@
 (library
- (name kane_model)
- (public_name kane.model)
+ (name kane_action)
+ (public_name kane.action)
  (synopsis "Describes action for building a Kane Wiki")
  (libraries yocaml kane.util kane.model))
