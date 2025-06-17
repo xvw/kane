@@ -29,5 +29,5 @@ setup.log
 _opam/
 
 # Generation artifact
-.cache
-_www
+.cache/
+_www/
