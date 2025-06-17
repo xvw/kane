@@ -15,3 +15,6 @@ val one_of_ext : string list -> Yocaml.Path.t -> bool
 
 (** Check if a filepath has a markdown extension. *)
 val markdown_ext : Yocaml.Path.t -> bool
+
+(** Check if a filepath has a csexp extension. *)
+val csexp_ext : Yocaml.Path.t -> bool

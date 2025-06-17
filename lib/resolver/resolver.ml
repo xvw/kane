@@ -28,6 +28,7 @@ class t
         method parent = Path.(source_path / ".cache")
         method cache = Path.(self#parent / "cache.csexp")
         method links = Path.(self#parent / "links")
+        method backlinks_map = Path.(self#parent / "backlinks.csexp")
 
         method resolve_link id =
           Path.rel [ Kane_model.Id.to_string id ]

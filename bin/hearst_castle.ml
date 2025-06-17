@@ -5,6 +5,7 @@ let program (resolver : Kane_resolver.t) () =
   let* configuration = return Kane_model.Configuration.neutral in
   Action.restore_cache ~on:`Source cache
   >>= Kane_action.Pages.index_links ~resolver ~configuration
+  >>= Kane_action.Pages.create_backlinks ~resolver
   >>= Action.store_cache ~on:`Source cache
 ;;
 

@@ -36,3 +36,4 @@ let one_of_ext exts path =
 ;;
 
 let markdown_ext = one_of_ext [ "md"; "markdown"; "mdown" ]
+let csexp_ext = one_of_ext [ "csexp"; "scm"; "lisp"; "sexp" ]

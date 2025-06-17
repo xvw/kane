@@ -112,6 +112,12 @@ module Dump = struct
     ; links : Id.Set.t
     }
 
+  let id { id; _ } = id
+  let title { title; _ } = title
+  let synopsis { synopsis; _ } = synopsis
+  let link { link; _ } = link
+  let links { links; _ } = links
+
   let visit ~configuration ~source ~target ~link =
     let open Yocaml.Eff in
     let+ (id, title, synopsis), links =

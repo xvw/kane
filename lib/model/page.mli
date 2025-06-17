@@ -10,6 +10,11 @@ module Dump : sig
   include Yocaml.Required.DATA_READABLE
 
   val to_string : t -> string
+  val id : t -> Id.t
+  val title : t -> string
+  val synopsis : t -> string option
+  val link : t -> Yocaml.Path.t
+  val links : t -> Id.Set.t
 
   val visit
     :  configuration:Configuration.t
