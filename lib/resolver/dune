@@ -1,4 +1,5 @@
 (library
  (name kane_resolver)
  (public_name kane.resolver)
- (libraries yocaml))
+ (modules_without_implementation intf)
+ (libraries yocaml kane.model))
