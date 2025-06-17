@@ -34,3 +34,5 @@ end
 
 module Set = Kane_util.Set.Make (O)
 module Map = Kane_util.Map.Make (O)
+
+let to_string x = x
