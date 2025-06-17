@@ -97,14 +97,14 @@ let normalize_repr
       ?port
       ?(query = Kane_util.String.Map.empty)
       f
-      path
+      a_path
   =
   let open Yocaml.Data in
   record
     [ "scheme", option string scheme
     ; "host", option string host
     ; "port", option int port
-    ; "path", f path
+    ; "path", f a_path
     ; "query", (Kane_util.String.Map.normalize (list_of string)) query
     ; Kane_util.as_opt_bool "scheme" scheme
     ; Kane_util.as_opt_bool "host" host

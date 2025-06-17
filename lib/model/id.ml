@@ -10,7 +10,10 @@ let trim x =
 
 let from_string x = x |> trim |> Kane_util.Slug.from
 let from_slug x = from_string x
-let from_path x = x |> Kane_util.Slug.from_path |> from_slug
+
+let from_path x =
+  x |> Yocaml.Path.remove_extension |> Kane_util.Slug.from_path |> from_slug
+;;
 
 let validate =
   let open Yocaml.Data.Validation in

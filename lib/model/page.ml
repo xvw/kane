@@ -19,20 +19,10 @@ class common
   end
 
 module Input = struct
-  class page
-    ?id
-    ~title
-    ?synopsis
-    ?description
-    ?display_table_of_content
-    ?tags
-    () =
+  class page ~title ?synopsis ?description ?display_table_of_content ?tags () =
     object (_ : #Intf.page_input)
       inherit
         common ~title ?synopsis ?description ?display_table_of_content ?tags ()
-
-      val id_value = id
-      method id = id_value
     end
 
   type t = Intf.page_input
@@ -44,8 +34,7 @@ module Input = struct
     let open Yocaml.Data.Validation in
     record (fun f ->
       let open Kane_util.Validation in
-      let+ id = optional f [ "id"; "ident"; "identifier"; "uid" ] Id.validate
-      and+ title = required f [ "title"; "t" ] ensure_not_blank
+      let+ title = required f [ "title"; "t" ] ensure_not_blank
       and+ synopsis = optional f [ "synopsis"; "long_desc" ] ensure_not_blank
       and+ description = optional f [ "desc"; "description" ] ensure_not_blank
       and+ tags = optional f [ "tags"; "keywords" ] Tag.Set.validate
@@ -60,23 +49,11 @@ module Input = struct
           ]
           bool
       in
-      new page
-        ?id
-        ~title
-        ?synopsis
-        ?description
-        ?display_table_of_content
-        ?tags
-        ())
+      new page ~title ?synopsis ?description ?display_table_of_content ?tags ())
   ;;
 end
 
-let id_of target input =
-  let default = target |> Id.from_path in
-  Option.value ~default input#id
-;;
-
-class page ~configuration ~source ~target input =
+class page ~configuration ~source ~target ~link input =
   object (_ : #Intf.page_output)
     inherit
       common
@@ -90,13 +67,15 @@ class page ~configuration ~source ~target input =
     val configuration_value = configuration
     val source_value = source
     val target_value = target
+    val link_value = link
     val table_of_content_value = None
-    val id_value = id_of target input
+    val id_value = Id.from_path link
     method id = id_value
     method configuration = configuration_value
     method table_of_content = table_of_content_value
     method source_path = source_value
     method target_path = target_value
+    method link_path = link_value
     method set_table_of_content new_toc = {<table_of_content_value = new_toc>}
   end
 
@@ -117,15 +96,58 @@ let collect_links source =
   , meta )
 ;;
 
-let visit ~configuration ~source ~target cache =
+let visit ~configuration ~source ~target ~link =
   let open Yocaml.Eff in
   let+ links, input_meta = collect_links source in
-  let meta = new page ~configuration ~source ~target input_meta in
-  Cache.visit
-    ~id:meta#id
-    ~path:target
-    ~title:meta#title
-    ?synopsis:meta#synopsis
-    ~links
-    cache
+  let meta = new page ~configuration ~source ~target ~link input_meta in
+  (meta#id, meta#title, meta#synopsis), Id.Set.remove meta#id links
 ;;
+
+module Dump = struct
+  type t =
+    { id : Id.t
+    ; title : string
+    ; synopsis : string option
+    ; link : Yocaml.Path.t
+    ; links : Id.Set.t
+    }
+
+  let visit ~configuration ~source ~target ~link =
+    let open Yocaml.Eff in
+    let+ (id, title, synopsis), links =
+      visit ~configuration ~target ~source ~link
+    in
+    { id; title; synopsis; link; links }
+  ;;
+
+  let entity_name = "Page.Dump"
+  let neutral = Yocaml.Metadata.required entity_name
+
+  let validate =
+    let open Yocaml.Data.Validation in
+    record (fun fields ->
+      let+ id = required fields "id" Id.validate
+      and+ title = required fields "title" string
+      and+ synopsis = optional fields "synopsis" string
+      and+ link = required fields "link" Kane_util.Path.validate
+      and+ links =
+        optional_or ~default:Id.Set.empty fields "links" Id.Set.validate
+      in
+      { id; title; synopsis; link; links })
+  ;;
+
+  let normalize { id; title; synopsis; link; links } =
+    let open Yocaml.Data in
+    record
+      [ "id", Id.normalize id
+      ; "title", string title
+      ; "synopsis", option string synopsis
+      ; "link", Kane_util.Path.normalize link
+      ; "links", Id.Set.normalize links
+      ]
+  ;;
+
+  let to_string x =
+    x |> normalize |> Yocaml.Data.to_sexp |> Yocaml.Sexp.Canonical.to_string
+  ;;
+end

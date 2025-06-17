@@ -1,0 +1,5 @@
+pin-depends: [
+  ["yocaml.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+  ["yocaml_runtime.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+  ["yocaml_eio.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+]

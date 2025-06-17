@@ -22,7 +22,6 @@ end
 (** Describe a regular page (as an input). *)
 class type page_input = object
   inherit page
-  method id : Id.t option
 end
 
 (** Describe a regular page (as an output). *)
@@ -33,4 +32,5 @@ class type page_output = object
   method configuration : Configuration.t
   method target_path : Yocaml.Path.t
   method source_path : Yocaml.Path.t
+  method link_path : Yocaml.Path.t
 end

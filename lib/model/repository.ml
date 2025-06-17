@@ -45,9 +45,9 @@ let blob ?(branch = "main") path =
   resolve Yocaml.Path.(relocate ~into:(rel [ "blob"; branch ]) path)
 ;;
 
-let repo_from_uri path =
+let repo_from_uri a_path =
   let open Yocaml.Data in
-  match path with
+  match a_path with
   | "" :: user :: repository :: ([ "" ] | [])
   | user :: repository :: ([ "" ] | []) ->
     record [ "user", string user; "repository", string repository ]

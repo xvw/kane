@@ -35,3 +35,8 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/xvw/kane.git"
+pin-depends: [
+  ["yocaml.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+  ["yocaml_runtime.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+  ["yocaml_eio.dev" "git+https://github.com/xhtmlboi/yocaml.git"]
+]

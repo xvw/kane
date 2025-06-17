@@ -25,7 +25,7 @@ class t
 
     method state =
       object (self)
-        method parent = Path.(source_path / "cache")
+        method parent = Path.(source_path / ".cache")
         method cache = Path.(self#parent / "cache.csexp")
         method links = Path.(self#parent / "links")
 

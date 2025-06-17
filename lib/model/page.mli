@@ -6,9 +6,15 @@ module Input : Yocaml.Required.DATA_READABLE
 
 type t
 
-val visit
-  :  configuration:Configuration.t
-  -> source:Yocaml.Path.t
-  -> target:Yocaml.Path.t
-  -> Cache.t
-  -> Cache.t Yocaml.Eff.t
+module Dump : sig
+  include Yocaml.Required.DATA_READABLE
+
+  val to_string : t -> string
+
+  val visit
+    :  configuration:Configuration.t
+    -> source:Yocaml.Path.t
+    -> target:Yocaml.Path.t
+    -> link:Yocaml.Path.t
+    -> t Yocaml.Eff.t
+end
