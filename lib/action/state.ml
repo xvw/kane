@@ -5,9 +5,9 @@ let create_link_table ~(resolver : Kane_resolver.t) ~configuration source =
   let id = Kane_model.Id.from_path link in
   let task () =
     let open Eff in
-    let open Kane_model.Page in
-    let+ dump = Dump.visit ~configuration ~source ~target ~link in
-    Dump.to_string dump
+    let open Kane_model in
+    let+ rel = Relation.from_page ~configuration ~source ~target ~link in
+    Relation.dump rel
   in
   Action.Static.write_file
     (resolver#state#resolve_link id)
@@ -42,21 +42,21 @@ let index_backlinks ~(resolver : Kane_resolver.t) =
         (read_file_as_metadata
            ~on:`Source
            (module Sexp.Provider.Canonical)
-           (module Kane_model.Page.Dump))
+           (module Kane_model.Relation))
         links
     in
     Stdlib.List.fold_left
-      (fun store dump ->
+      (fun store rel ->
          let open Kane_model in
          Id.Set.fold
            (fun id map ->
               Id.Map.update
                 id
                 (function
-                  | None -> Some (Id.Set.singleton (Page.Dump.id dump))
-                  | Some set -> Some (Id.Set.add (Page.Dump.id dump) set))
+                  | None -> Some (Id.Set.singleton (Relation.id rel))
+                  | Some set -> Some (Id.Set.add (Relation.id rel) set))
                 map)
-           (Page.Dump.links dump)
+           (Relation.links rel)
            store)
       Kane_model.Id.Map.empty
       links
@@ -85,20 +85,39 @@ let index_each_backlinks ~(resolver : Kane_resolver.t) cache =
       resolver#state#backlinks_map
   in
   let store = Kane_model.Id.Map.to_list store in
+  let create_state set () =
+    let files =
+      set
+      |> Kane_model.Id.Set.to_list
+      |> Stdlib.List.map resolver#state#resolve_link
+    in
+    let+ s =
+      List.traverse
+        (fun x ->
+           let* () = logf "aie: %a" Yocaml.Path.pp x in
+           read_file_as_metadata
+             ~on:`Source
+             (module Sexp.Provider.Canonical)
+             (module Kane_model.Relation)
+             x)
+        files
+    in
+    ( s
+      |> Data.list_of Kane_model.Relation.normalize
+      |> Data.to_sexp
+      |> Sexp.Canonical.to_string
+    , Deps.from_list files )
+  in
   Action.batch_list
     store
-    (fun (id, set) ->
-       let target = resolver#state#resolve_backlink id in
-       Action.Static.write_file
+    (fun (current_id, set) ->
+       let target = resolver#state#resolve_backlink current_id in
+       Action.Dynamic.write_file
          target
          Task.(
            Pipeline.track_files resolver#common_deps
            >>> Pipeline.track_file resolver#state#backlinks_map
-           >>| fun () ->
-           set
-           |> Kane_model.Id.Set.normalize
-           |> Data.to_sexp
-           |> Sexp.Canonical.to_string))
+           >>> from_effect ~has_dynamic_dependencies:true (create_state set)))
     cache
 ;;
 
