@@ -40,3 +40,10 @@ val index_links
 
 val index_backlinks : resolver:Kane_resolver.t -> Yocaml.Action.t
 val index_each_backlinks : resolver:Kane_resolver.t -> Yocaml.Action.t
+
+(** {1 Notes}
+
+    TODO: For the moment, the generator does not yet support incrementality,
+    but the separation of actions will enable a handler to be composed
+    for generation and a handler for incremental construction during
+    the serve. *)
