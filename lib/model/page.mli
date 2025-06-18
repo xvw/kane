@@ -6,9 +6,11 @@ module Input : Yocaml.Required.DATA_READABLE
 
 type t
 
-val visit
+val to_relation
   :  configuration:Configuration.t
   -> source:Yocaml.Path.t
   -> target:Yocaml.Path.t
   -> link:Yocaml.Path.t
-  -> ((Id.t * string * string option) * Id.Set.t) Yocaml.Eff.t
+  -> Relation.t Yocaml.Eff.t
+
+val normalize : t -> (string * Yocaml.Data.t) list

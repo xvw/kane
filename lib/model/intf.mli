@@ -11,6 +11,11 @@ class type with_table_of_contents = object ('self)
   method set_table_of_content : string option -> 'self
 end
 
+class type with_backlinks = object ('self)
+  method backlinks : Relation.t list
+  method set_backlinks : Relation.t list -> 'self
+end
+
 class type page = object
   method title : string
   method synopsis : string option
@@ -28,6 +33,7 @@ end
 class type page_output = object
   inherit page
   inherit with_table_of_contents
+  inherit with_backlinks
   method id : Id.t
   method configuration : Configuration.t
   method target_path : Yocaml.Path.t

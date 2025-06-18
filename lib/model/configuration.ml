@@ -7,18 +7,23 @@ type t =
   ; software_license : Link.t option
   ; content_license : Link.t option
   ; main_locale : string
+  ; root : Yocaml.Path.t
   }
 
+let entity_name = "Configuration"
+
 let neutral =
-  { main_title = "untitled"
-  ; main_url = Url.http "localhost"
-  ; repository = None
-  ; branch = "main"
-  ; owner = None
-  ; software_license = None
-  ; content_license = None
-  ; main_locale = "en_US"
-  }
+  Ok
+    { main_title = "untitled"
+    ; main_url = Url.http "localhost"
+    ; repository = None
+    ; branch = "main"
+    ; owner = None
+    ; software_license = None
+    ; content_license = None
+    ; main_locale = "en_US"
+    ; root = Yocaml.Path.abs []
+    }
 ;;
 
 let validate =
@@ -40,6 +45,12 @@ let validate =
       optional o [ "content_license"; "text_license"; "license" ] Link.validate
     and+ main_locale =
       optional_or ~default:"en_US" o [ "locale"; "lang" ] string
+    and+ root =
+      optional_or
+        ~default:Yocaml.Path.root
+        o
+        [ "root"; "main_path"; "path" ]
+        path
     in
     { main_title
     ; main_url
@@ -49,6 +60,7 @@ let validate =
     ; software_license
     ; content_license
     ; main_locale
+    ; root
     })
 ;;
 
@@ -61,6 +73,7 @@ let normalize
       ; content_license
       ; main_url
       ; main_locale
+      ; root
       }
   =
   let open Yocaml.Data in
@@ -74,6 +87,7 @@ let normalize
     ; "repository", option Repository.normalize repository
     ; "branch", string branch
     ; "owner", option Identity.normalize owner
+    ; "root", path root
     ; ( "licenses"
       , record
           [ "code", option Link.normalize software_license
@@ -94,3 +108,5 @@ let meta_tags { main_title; owner; main_locale; _ } =
     ]
   @ Html_meta.map_option Identity.meta_tags owner
 ;;
+
+let with_root root c = { c with root }

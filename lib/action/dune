@@ -2,4 +2,11 @@
  (name kane_action)
  (public_name kane.action)
  (synopsis "Describes action for building a Kane Wiki")
- (libraries yocaml kane.util kane.model kane.resolver))
+ (libraries
+  yocaml
+  yocaml_otoml
+  yocaml_yaml
+  yocaml_cmarkit
+  kane.util
+  kane.model
+  kane.resolver))

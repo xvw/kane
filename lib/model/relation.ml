@@ -6,20 +6,15 @@ type t =
   ; links : Id.Set.t
   }
 
+let make ~title ?synopsis ~link ?(links = Id.Set.empty) id =
+  { title; synopsis; link; links; id }
+;;
+
 let id { id; _ } = id
 let title { title; _ } = title
 let synopsis { synopsis; _ } = synopsis
 let link { link; _ } = link
 let links { links; _ } = links
-
-let from_page ~configuration ~source ~target ~link =
-  let open Yocaml.Eff in
-  let+ (id, title, synopsis), links =
-    Page.visit ~configuration ~target ~source ~link
-  in
-  { id; title; synopsis; link; links }
-;;
-
 let entity_name = "Relation"
 let neutral = Yocaml.Metadata.required entity_name
 

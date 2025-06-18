@@ -6,7 +6,7 @@ let create_link_table ~(resolver : Kane_resolver.t) ~configuration source =
   let task () =
     let open Eff in
     let open Kane_model in
-    let+ rel = Relation.from_page ~configuration ~source ~target ~link in
+    let+ rel = Page.to_relation ~configuration ~source ~target ~link in
     Relation.dump rel
   in
   Action.Static.write_file

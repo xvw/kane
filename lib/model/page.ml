@@ -64,6 +64,7 @@ class page ~configuration ~source ~target ~link input =
         ~tags:input#tags
         ()
 
+    inherit Backlinks.t ()
     val configuration_value = configuration
     val source_value = source
     val target_value = target
@@ -96,9 +97,26 @@ let collect_links source =
   , meta )
 ;;
 
-let visit ~configuration ~source ~target ~link =
+let to_relation ~configuration ~source ~target ~link =
   let open Yocaml.Eff in
   let+ links, input_meta = collect_links source in
   let meta = new page ~configuration ~source ~target ~link input_meta in
-  (meta#id, meta#title, meta#synopsis), Id.Set.remove meta#id links
+  Relation.make
+    ~title:meta#title
+    ?synopsis:meta#synopsis
+    ~link
+    ~links:(Id.Set.remove meta#id links)
+    meta#id
+;;
+
+let normalize (p : t) =
+  Yocaml.Data.
+    [ "title", string p#title
+    ; "synopsis", option string p#synopsis
+    ; "description", option string p#description
+    ; "tags", Tag.Set.normalize p#tags
+    ; "has_table_of_contents", bool p#display_table_of_content
+    ; "table_of_contents", option string p#table_of_content
+    ; "backlinks", list_of Relation.normalize p#backlinks
+    ]
 ;;
