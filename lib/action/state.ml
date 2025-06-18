@@ -26,7 +26,7 @@ let index_links ~(resolver : Kane_resolver.t) ~configuration =
     (create_link_table ~resolver ~configuration)
 ;;
 
-let create_backlinks ~(resolver : Kane_resolver.t) =
+let index_backlinks ~(resolver : Kane_resolver.t) =
   let open Yocaml in
   let traverse_links () =
     let open Eff in
@@ -72,4 +72,39 @@ let create_backlinks ~(resolver : Kane_resolver.t) =
       |> Kane_model.(Id.Map.normalize Id.Set.normalize)
       |> Data.to_sexp
       |> Sexp.Canonical.to_string)
+;;
+
+let index_each_backlinks ~(resolver : Kane_resolver.t) cache =
+  let open Yocaml in
+  let open Yocaml.Eff in
+  let* store =
+    read_file_as_metadata
+      ~on:`Source
+      (module Sexp.Provider.Canonical)
+      (module Kane_model.Id.Map_of_set)
+      resolver#state#backlinks_map
+  in
+  let store = Kane_model.Id.Map.to_list store in
+  Action.batch_list
+    store
+    (fun (id, set) ->
+       let target = resolver#state#resolve_backlink id in
+       Action.Static.write_file
+         target
+         Task.(
+           Pipeline.track_files resolver#common_deps
+           >>> Pipeline.track_file resolver#state#backlinks_map
+           >>| fun () ->
+           set
+           |> Kane_model.Id.Set.normalize
+           |> Data.to_sexp
+           |> Sexp.Canonical.to_string))
+    cache
+;;
+
+let indexation ~(resolver : Kane_resolver.t) ~configuration =
+  let open Yocaml.Eff in
+  index_links ~resolver ~configuration
+  >=> index_backlinks ~resolver
+  >=> index_each_backlinks ~resolver
 ;;

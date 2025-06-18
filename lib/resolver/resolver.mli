@@ -10,8 +10,11 @@ class t : ?source:p -> ?target:p -> ?web_folder:p -> unit -> object
     < parent : p
     ; cache : p
     ; links : p
+    ; backlinks : p
+    ; backlinks_map : p
+    ; resolve_id : p -> i -> p
     ; resolve_link : i -> p
-    ; backlinks_map : p >
+    ; resolve_backlink : i -> p >
 
   method source : < parent : p ; content : p ; configuration : p ; pages : p >
   method target : target_resolver

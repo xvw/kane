@@ -39,3 +39,11 @@ module Set = Kane_util.Set.Make (O)
 module Map = Kane_util.Map.Make (O)
 
 let to_string x = x
+
+module Map_of_set = struct
+  type t = Set.t Map.t
+
+  let entity_name = "Id.Map of set"
+  let neutral = Ok Map.empty
+  let validate = Map.validate Set.validate
+end
