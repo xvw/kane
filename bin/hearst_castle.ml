@@ -1,11 +1,10 @@
 let program (resolver : Kane_resolver.t) () =
   let open Yocaml in
   let open Eff in
-  let cache = resolver#state#cache in
   let* configuration = return Kane_model.Configuration.neutral in
-  Action.restore_cache ~on:`Source cache
-  >>= Kane_action.State.indexation ~resolver ~configuration
-  >>= Action.store_cache ~on:`Source cache
+  Kane_action.Cache.with_cache
+    ~resolver
+    (Kane_action.State.indexation ~resolver ~configuration)
 ;;
 
 let () =
