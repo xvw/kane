@@ -1,5 +1,9 @@
-class t : ?backlinks:Relation.t list -> unit -> object ('a)
-  val backlinks_value : Relation.t list
-  method backlinks : Relation.t list
-  method set_backlinks : Relation.t list -> 'a
-end
+class t :
+  ?backlinks:Relation.t Id.Map.t
+  -> ?internal_links:Relation.t Id.Map.t
+  -> unit
+  -> Intf.with_backlinks
+
+val validate : t Kane_util.Validation.v
+val normalize : t -> Yocaml.Data.t
+val dump : t -> string

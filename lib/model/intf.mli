@@ -12,8 +12,10 @@ class type with_table_of_contents = object ('self)
 end
 
 class type with_backlinks = object ('self)
-  method backlinks : Relation.t list
-  method set_backlinks : Relation.t list -> 'self
+  method internal_links : Relation.t Id.Map.t
+  method backlinks : Relation.t Id.Map.t
+  method set_backlinks : Relation.t Id.Map.t -> 'self
+  method set_internal_links : Relation.t Id.Map.t -> 'self
 end
 
 class type page = object

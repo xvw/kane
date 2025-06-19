@@ -45,3 +45,7 @@ let normalize { id; title; synopsis; link; links } =
 let dump x =
   x |> normalize |> Yocaml.Data.to_sexp |> Yocaml.Sexp.Canonical.to_string
 ;;
+
+let to_map list =
+  List.fold_left (fun map rel -> Id.Map.add rel.id rel map) Id.Map.empty list
+;;

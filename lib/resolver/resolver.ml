@@ -27,17 +27,17 @@ class t
       object (self)
         method parent = Path.(source_path / ".cache")
         method cache = Path.(self#parent / "cache.csexp")
-        method links = Path.(self#parent / "links")
+        method ids = Path.(self#parent / "ids")
         method backlinks = Path.(self#parent / "backlinks")
         method backlinks_map = Path.(self#parent / "backlinks.csexp")
 
-        method resolve_id into id =
+        method resolve_id_for into id =
           Path.rel [ Kane_model.Id.to_string id ]
           |> Path.change_extension "csexp"
           |> Path.move ~into
 
-        method resolve_link = self#resolve_id self#links
-        method resolve_backlink = self#resolve_id self#backlinks
+        method resolve_id = self#resolve_id_for self#ids
+        method resolve_backlink = self#resolve_id_for self#backlinks
       end
 
     method source =

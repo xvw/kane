@@ -117,6 +117,7 @@ let normalize (p : t) =
     ; "tags", Tag.Set.normalize p#tags
     ; "has_table_of_contents", bool p#display_table_of_content
     ; "table_of_contents", option string p#table_of_content
-    ; "backlinks", list_of Relation.normalize p#backlinks
+    ; "backlinks", Id.Map.normalize Relation.normalize p#backlinks
+    ; "internal_links", Id.Map.normalize Relation.normalize p#internal_links
     ]
 ;;

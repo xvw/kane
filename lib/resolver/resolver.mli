@@ -9,11 +9,11 @@ class t : ?source:p -> ?target:p -> ?web_folder:p -> unit -> object
   method state :
     < parent : p
     ; cache : p
-    ; links : p
+    ; ids : p
     ; backlinks : p
     ; backlinks_map : p
-    ; resolve_id : p -> i -> p
-    ; resolve_link : i -> p
+    ; resolve_id_for : p -> i -> p
+    ; resolve_id : i -> p
     ; resolve_backlink : i -> p >
 
   method source : < parent : p ; content : p ; configuration : p ; pages : p >
