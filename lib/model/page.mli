@@ -4,9 +4,16 @@ module Input : Yocaml.Required.DATA_READABLE
 
 (** Write a page. *)
 
-type t
+class t :
+  configuration:Configuration.t
+  -> source:Yocaml.Path.t
+  -> target:Yocaml.Path.t
+  -> link:Yocaml.Path.t
+  -> ?links:Backlinks.t
+  -> Input.t
+  -> Intf.page_output
 
-val to_relation
+val make_relation
   :  configuration:Configuration.t
   -> source:Yocaml.Path.t
   -> target:Yocaml.Path.t
@@ -14,3 +21,4 @@ val to_relation
   -> Relation.t Yocaml.Eff.t
 
 val normalize : t -> (string * Yocaml.Data.t) list
+val toc : t -> string option -> t

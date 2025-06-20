@@ -13,6 +13,22 @@ module Make (O : Intf.ORDERED_TYPE) = struct
       key, value)
   ;;
 
+  let to_set
+        (type a b)
+        (module S : Intf.SET with type t = a and type elt = b)
+        folder
+        map
+    =
+    fold (fun key value set -> S.add (folder key value) set) map S.empty
+  ;;
+
+  let to_deps f map =
+    fold
+      (fun key value set -> Yocaml.Deps.(concat @@ singleton (f key value)) set)
+      map
+      Yocaml.Deps.empty
+  ;;
+
   let validate on_subject =
     let open Yocaml.Data.Validation in
     list_of (pair O.validate on_subject / validate_line on_subject)

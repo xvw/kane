@@ -11,11 +11,17 @@ class type with_table_of_contents = object ('self)
   method set_table_of_content : string option -> 'self
 end
 
-class type with_backlinks = object ('self)
+class type backlinks = object ('self)
   method internal_links : Relation.t Id.Map.t
   method backlinks : Relation.t Id.Map.t
   method set_backlinks : Relation.t Id.Map.t -> 'self
   method set_internal_links : Relation.t Id.Map.t -> 'self
+  method all : Relation.t Id.Map.t
+end
+
+class type with_backlinks = object ('self)
+  method set : backlinks -> 'self
+  method get : backlinks
 end
 
 class type page = object
@@ -35,10 +41,10 @@ end
 class type page_output = object
   inherit page
   inherit with_table_of_contents
-  inherit with_backlinks
   method id : Id.t
   method configuration : Configuration.t
   method target_path : Yocaml.Path.t
   method source_path : Yocaml.Path.t
   method link_path : Yocaml.Path.t
+  method links : with_backlinks
 end

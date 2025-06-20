@@ -53,7 +53,7 @@ module Input = struct
   ;;
 end
 
-class page ~configuration ~source ~target ~link input =
+class t ~configuration ~source ~target ~link ?links input =
   object (_ : #Intf.page_output)
     inherit
       common
@@ -64,7 +64,7 @@ class page ~configuration ~source ~target ~link input =
         ~tags:input#tags
         ()
 
-    inherit Backlinks.t ()
+    val links_value = new Backlinks.attached ?backlinks:links ()
     val configuration_value = configuration
     val source_value = source
     val target_value = target
@@ -78,9 +78,8 @@ class page ~configuration ~source ~target ~link input =
     method target_path = target_value
     method link_path = link_value
     method set_table_of_content new_toc = {<table_of_content_value = new_toc>}
+    method links = links_value
   end
-
-type t = Intf.page_output
 
 let collect_links_of_meta _ = Id.Set.empty
 
@@ -97,10 +96,10 @@ let collect_links source =
   , meta )
 ;;
 
-let to_relation ~configuration ~source ~target ~link =
+let make_relation ~configuration ~source ~target ~link =
   let open Yocaml.Eff in
   let+ links, input_meta = collect_links source in
-  let meta = new page ~configuration ~source ~target ~link input_meta in
+  let meta = new t ~configuration ~source ~target ~link input_meta in
   Relation.make
     ~title:meta#title
     ?synopsis:meta#synopsis
@@ -117,7 +116,10 @@ let normalize (p : t) =
     ; "tags", Tag.Set.normalize p#tags
     ; "has_table_of_contents", bool p#display_table_of_content
     ; "table_of_contents", option string p#table_of_content
-    ; "backlinks", Id.Map.normalize Relation.normalize p#backlinks
-    ; "internal_links", Id.Map.normalize Relation.normalize p#internal_links
+    ; "backlinks", Id.Map.normalize Relation.normalize p#links#get#backlinks
+    ; ( "internal_links"
+      , Id.Map.normalize Relation.normalize p#links#get#internal_links )
     ]
 ;;
+
+let toc (p : t) tree = p#set_table_of_content tree

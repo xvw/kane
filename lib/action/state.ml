@@ -6,7 +6,7 @@ let create_id_table ~(resolver : Kane_resolver.t) ~configuration source =
   let task () =
     let open Eff in
     let open Kane_model in
-    let+ rel = Page.to_relation ~configuration ~source ~target ~link in
+    let+ rel = Page.make_relation ~configuration ~source ~target ~link in
     Relation.dump rel
   in
   Action.Static.write_file
@@ -99,22 +99,18 @@ let index_each_backlinks ~(resolver : Kane_resolver.t) cache =
     in
     let* internal_links =
       List.traverse
-        (fun x ->
-           read_file_as_metadata
-             ~on:`Source
-             (module Sexp.Provider.Canonical)
-             (module Kane_model.Relation)
-             x)
+        (read_file_as_metadata
+           ~on:`Source
+           (module Sexp.Provider.Canonical)
+           (module Kane_model.Relation))
         internal_link_files
     in
     let+ backlinks =
       List.traverse
-        (fun x ->
-           read_file_as_metadata
-             ~on:`Source
-             (module Sexp.Provider.Canonical)
-             (module Kane_model.Relation)
-             x)
+        (read_file_as_metadata
+           ~on:`Source
+           (module Sexp.Provider.Canonical)
+           (module Kane_model.Relation))
         backlink_files
     in
     let link_state =
