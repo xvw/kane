@@ -29,26 +29,7 @@ let read_page
   (page, content), dynamic_deps
 ;;
 
-let resolve_internal_links (page, contents) =
-  let resolver key =
-    let key = Kane_model.Id.from_string key in
-    page#links#all
-    |> Kane_model.Id.Map.find_opt key
-    |> Option.map (fun rel ->
-      ( rel |> Kane_model.Relation.link |> Yocaml.Path.to_string
-      , rel |> Kane_model.Relation.title
-      , rel |> Kane_model.Relation.synopsis ))
-  in
-  let open Yocaml.Task in
-  const (page, contents)
-  >>> Yocaml_cmarkit.content_to_html_with_toc
-        ~safe:false
-        ~strict:false
-        Kane_model.Page.toc
-        ()
-;;
-
-let process_page (resolver : Kane_resolver.t) ~configuration source =
+let process_page ~(resolver : Kane_resolver.t) ~configuration source =
   let open Yocaml in
   let target = resolver#target#resolve_page source in
   let link = resolver#url#resolve_page source in
@@ -64,5 +45,13 @@ let process_page (resolver : Kane_resolver.t) ~configuration source =
             ~target
             ~link
             ~id:current_id
-      >>> Dynamic.on_static resolve_internal_links)
+      >>> Dynamic.on_static (Markdown.to_html_with_resolution ()))
+;;
+
+let all ~(resolver : Kane_resolver.t) ~configuration =
+  Yocaml.Action.batch
+    ~only:`Files
+    ~where:Kane_util.markdown_ext
+    resolver#source#pages
+    (process_page ~resolver ~configuration)
 ;;

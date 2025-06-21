@@ -30,4 +30,4 @@ _opam/
 
 # Generation artifact
 .cache/
-_www/
+.www/

@@ -48,3 +48,8 @@ class type page_output = object
   method link_path : Yocaml.Path.t
   method links : with_backlinks
 end
+
+class type backlinkable = object
+  inherit with_table_of_contents
+  method links : with_backlinks
+end

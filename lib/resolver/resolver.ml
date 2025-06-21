@@ -12,14 +12,10 @@ class target ~parent =
       page |> Path.change_extension "html" |> Path.move ~into:self#pages
   end
 
-class t
-  ?(source = Path.pwd)
-  ?(target = Path.rel [ "_www" ])
-  ?(web_folder = Path.root)
-  () =
+class t ?(source = Path.pwd) ?target ?(web_folder = Path.root) () =
   object (self)
     val source_path = source
-    val target_path = target
+    val target_path = Option.value ~default:Path.(source / ".www") target
     val web_folder_path = web_folder
     method bin = Path.from_string Sys.argv.(0)
 

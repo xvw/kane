@@ -4,7 +4,8 @@ let program (resolver : Kane_resolver.t) () =
   let* configuration = Kane_action.Configuration.fetch ~resolver in
   Kane_action.Cache.with_cache
     ~resolver
-    (Kane_action.State.indexation ~resolver ~configuration)
+    (Kane_action.State.indexation ~resolver ~configuration
+     >=> Kane_action.Page.all ~resolver ~configuration)
 ;;
 
 let () =
