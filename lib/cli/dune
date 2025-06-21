@@ -1,0 +1,4 @@
+(library
+ (name kane_cli)
+ (public_name kane_cli)
+ (libraries kane.model kane.resolver cmdliner))

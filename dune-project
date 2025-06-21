@@ -43,3 +43,12 @@
   yocaml_otoml
   yocaml_syndication
   yocaml_eio))
+
+(package
+ (name kane_cli)
+ (synopsis "Cmdliner helpers for invoking generator")
+ (description "Use Cmdliner for building Kane's wikies")
+ (depends
+  (ocaml (>= 5.2.0))
+  (kane (= :version))
+  cmdliner))

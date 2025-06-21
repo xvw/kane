@@ -2,8 +2,10 @@
     modules) that can be used to build archetypes of generated
     documents on demand. *)
 
-class type normalizable = object
-  method fieldset : (string * Yocaml.Data.t) list
+class type html_document = object ('self)
+  method title : string option
+  method description : string option
+  method meta_tags : Html_meta.t list
 end
 
 class type with_table_of_contents = object ('self)
@@ -47,6 +49,7 @@ class type page_output = object
   method source_path : Yocaml.Path.t
   method link_path : Yocaml.Path.t
   method links : with_backlinks
+  method html : html_document
 end
 
 class type backlinkable = object

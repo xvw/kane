@@ -37,3 +37,8 @@ include Syntax
 
 let unit x = () <$ x
 let guard pred = if pred then Some () else None
+
+let to_bool = function
+  | Some _ -> true
+  | None -> false
+;;

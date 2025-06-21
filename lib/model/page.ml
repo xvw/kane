@@ -54,7 +54,7 @@ module Input = struct
 end
 
 class t ~configuration ~source ~target ~link ?links input =
-  object (_ : #Intf.page_output)
+  object (self : #Intf.page_output)
     inherit
       common
         ~title:input#title
@@ -79,6 +79,21 @@ class t ~configuration ~source ~target ~link ?links input =
     method link_path = link_value
     method set_table_of_content new_toc = {<table_of_content_value = new_toc>}
     method links = links_value
+
+    method html =
+      object
+        method title = Some (self#configuration.main_title ^ " - " ^ title_value)
+        method description = description_value
+
+        method meta_tags =
+          (Html_meta.
+             [ from_option Fun.id ~name:"description" self#description
+             ; make_opt ~name:"generator" ~content:"YOCaml"
+             ]
+           |> List.filter_map Fun.id)
+          @ Configuration.meta_tags self#configuration
+          @ Tag.meta_tags self#tags
+      end
   end
 
 let collect_links_of_meta _ = Id.Set.empty
@@ -114,12 +129,14 @@ let normalize (p : t) =
     ; "synopsis", option string p#synopsis
     ; "description", option string p#description
     ; "tags", Tag.Set.normalize p#tags
-    ; "has_table_of_contents", bool p#display_table_of_content
+    ; ( "has_table_of_contents"
+      , bool
+          (p#display_table_of_content
+           && Kane_util.Option.to_bool p#table_of_content) )
     ; "table_of_contents", option string p#table_of_content
     ; "backlinks", Id.Map.normalize Relation.normalize p#links#get#backlinks
     ; ( "internal_links"
       , Id.Map.normalize Relation.normalize p#links#get#internal_links )
+    ; "html", Html_document.normalize p#html
     ]
 ;;
-
-let toc (p : t) tree = p#set_table_of_content tree

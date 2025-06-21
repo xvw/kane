@@ -20,5 +20,4 @@ val make_relation
   -> link:Yocaml.Path.t
   -> Relation.t Yocaml.Eff.t
 
-val normalize : t -> (string * Yocaml.Data.t) list
-val toc : t -> string option -> t
+include Yocaml.Required.DATA_INJECTABLE with type t := t

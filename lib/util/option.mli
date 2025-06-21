@@ -1,6 +1,7 @@
 (** Some helpers for dealing with Option. *)
 
 val guard : bool -> unit option
+val to_bool : 'a option -> bool
 val unit : 'a option -> unit option
 
 module Syntax : sig
