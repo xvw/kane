@@ -5,7 +5,7 @@ let program (resolver : Kane_resolver.t) () =
   Kane_action.Cache.with_cache
     ~resolver
     (Kane_action.State.indexation ~resolver ~configuration
-     >=> Kane_action.Page.all ~resolver ~configuration)
+     >=> Kane_action.Page.all Yocaml.Task.id ~resolver ~configuration)
 ;;
 
 let () =
